@@ -1,43 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class GridManager : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] ComputeShader computeShader;
+
     [Header("Parameters")]
     [SerializeField] Vector2Int gridSize;
     [SerializeField] float cellSize;
 
-    Texture2D texture;
-    List<List<GameObject>> cells = new List<List<GameObject>>();
+    [SerializeField] Texture2D texture;
+    new SpriteRenderer renderer;
 
     private void Start()
     {
-        texture = new Texture2D(gridSize.x, gridSize.y);
-        gameObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
-
-        generateGrid();
+        renderer = GetComponent<SpriteRenderer>();
+        texture = generateGrid();
+        Sprite sprite = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1f / cellSize);
+        renderer.sprite = sprite;
+        Debug.Log(renderer.sprite.texture.GetPixel(100, 100));
     }
     
-    void generateGrid()
+    Texture2D generateGrid()
     {
-        
+        RenderTexture rw = new RenderTexture(gridSize.x, gridSize.y, 0);
+        rw.enableRandomWrite = true;
+        rw.Create();
+
+        computeShader.SetInts("resolution", gridSize.x, gridSize.y);
+        computeShader.SetTexture(computeShader.FindKernel("PerlinNoise"), "result", rw);
+        computeShader.Dispatch(computeShader.FindKernel("PerlinNoise"), gridSize.x / 8, gridSize.y / 8, 1);
+        //Debug.Log("hi");
+        Texture2D tex = new Texture2D(gridSize.x, gridSize.y);
+        RenderTexture.active = rw;
+        tex.ReadPixels(new Rect(0f, 0f, rw.width, rw.height), 0, 0);
+        tex.Apply();
+        return tex;
     }
 
     private void OnDrawGizmosSelected()
     {
-        for(int i = 0; i < gridSize.x + 1; i++)
-        {
-            Vector3 start = transform.position + new Vector3(i * cellSize, 0f, 0f);
-            Vector3 end = transform.position + new Vector3(i * cellSize, gridSize.y * cellSize, 0f);
-            Debug.DrawLine(start, end, Color.black);
-        }
-
-        for (int i = 0; i < gridSize.y + 1; i++)
-        {
-            Vector3 start = transform.position + new Vector3(0f, i * cellSize, 0f);
-            Vector3 end = transform.position + new Vector3(gridSize.x * cellSize, i * cellSize, 0f);
-            Debug.DrawLine(start, end, Color.black);
-        }
+        
     }
 }

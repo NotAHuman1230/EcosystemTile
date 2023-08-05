@@ -1,0 +1,16 @@
+#pragma kernel PerlinNoise
+
+int2 resolution;
+RWTexture2D<float4> result;
+
+float Random(float2 uv)
+{
+    return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453123);
+}
+
+[numthreads(8,8,1)]
+void PerlinNoise (uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = id.xy / (float2)resolution.xy;
+    result[id.xy] = float4(Random(uv), Random(uv * 2.5f), Random(uv * uv), 1);
+}
