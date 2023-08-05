@@ -4,36 +4,24 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] GameObject cellPrefab;
-    [SerializeField] Transform cellParent;
-
     [Header("Parameters")]
     [SerializeField] Vector2Int gridSize;
     [SerializeField] float cellSize;
 
+    Texture2D texture;
     List<List<GameObject>> cells = new List<List<GameObject>>();
 
     private void Start()
     {
-        transform.position = new Vector3(-gridSize.x * cellSize / 2f, -gridSize.y * cellSize / 2f, 0);
+        texture = new Texture2D(gridSize.x, gridSize.y);
+        gameObject.GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1);
 
         generateGrid();
     }
     
     void generateGrid()
     {
-        for (int y = 0; y < gridSize.y; y++)
-        {
-            cells.Add(new List<GameObject>());
-            for (int x = 0; x < gridSize.x; x++)
-            {
-                GameObject instance = Instantiate(cellPrefab, transform.position, Quaternion.identity, cellParent);
-                instance.transform.localScale = new Vector3(cellSize, cellSize, 1);
-                instance.transform.position = new Vector3(transform.position.x + x * cellSize, transform.position.y + y * cellSize, 0);
-                cells[y].Add(instance);
-            }
-        }
+        
     }
 
     private void OnDrawGizmosSelected()
@@ -51,6 +39,5 @@ public class GridManager : MonoBehaviour
             Vector3 end = transform.position + new Vector3(gridSize.x * cellSize, i * cellSize, 0f);
             Debug.DrawLine(start, end, Color.black);
         }
-
     }
 }
