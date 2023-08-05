@@ -1,16 +1,58 @@
 #pragma kernel PerlinNoise
 
 int2 resolution;
+int gridSize;
+float seed;
+float intensity;
 RWTexture2D<float4> result;
 
 float Random(float2 uv)
 {
     return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453123);
 }
+float2 randomDirection(float2 uv)
+{
+    float angle = Random(uv) * 360.0;
+    float2 vec = float2(cos(angle), sin(angle));
+    return vec;
+}
 
 [numthreads(8,8,1)]
 void PerlinNoise (uint3 id : SV_DispatchThreadID)
-{
+{   
     float2 uv = id.xy / (float2)resolution.xy;
-    result[id.xy] = float4(Random(uv), Random(uv * 2.5f), Random(uv * uv), 1);
+    
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+        return;
+    
+    float2 gridId = floor(uv.xy * (float)gridSize);
+    float2 gridUv = frac(uv.xy * (float)gridSize);
+    
+    float2 bl = gridId;
+    float2 br = gridId + float2(1.0, 0.0);
+    float2 tl = gridId + float2(0.0, 1.0);
+    float2 tr = gridId + float2(1.0, 1.0);
+    
+    float2 vectorBL = randomDirection(bl * seed);
+    float2 vectorBR = randomDirection(br * seed);
+    float2 vectorTL = randomDirection(tl * seed);
+    float2 vectorTR = randomDirection(tr * seed);
+
+    float2 vecToBL = -gridUv;
+    float2 vecToBR = float2(1.0, 0.0) - gridUv;
+    float2 vecToTL = float2(0.0, 1.0) - gridUv;
+    float2 vecToTR = float2(1.0, 1.0) - gridUv;
+    
+    float dotBL = dot(vecToBL, vectorBL);
+    float dotBR = dot(vecToBR, vectorBR);
+    float dotTL = dot(vecToTL, vectorTL);
+    float dotTR = dot(vecToTR, vectorTR);
+    
+    gridUv = smoothstep(0.0, 1.0, gridUv);
+    
+    float b = lerp(dotBL, dotBR, gridUv.x);
+    float t = lerp(dotTL, dotTR, gridUv.x);
+    float noise = lerp(b, t, gridUv.y) + intensity;
+    
+    result[id.xy] = float4(noise, noise, noise, 1.0);
 }
