@@ -9,23 +9,34 @@ public class GridManager : MonoBehaviour
     [SerializeField] ComputeShader noiseCompute;
     [SerializeField] ComputeShader visualCompute;
 
-    [Header("Map")]
+    [Header("Map Parameters")]
     [SerializeField] Vector2Int gridSize;
     [SerializeField] float cellSize;
-    [SerializeField] float waterFactor;
+
+    [Header("Biome Parameters")]
+    [Range(0f, 1f)][SerializeField] float waterCutoff;
+    [SerializeField] float humidityStrength;
+    [SerializeField] Color waterColour;
+    [SerializeField] Color baseColour;
+    [SerializeField] Color dryColour;
+
 
     [Header("Perlin Noise")]
     [SerializeField] int perlinCellSize;
     [SerializeField] float perlinIntensity;
 
     Texture2D humidityTexture;
-    Texture2D temperatureTexutre;
 
     private void Start()
     {
         generateMap();
     }
-    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            generateMap();
+    }
+
     Texture2D renderTexTo2D(RenderTexture _renderTexture)
     {
         Texture2D tex = new Texture2D(gridSize.x, gridSize.y);
@@ -50,19 +61,22 @@ public class GridManager : MonoBehaviour
 
         return rw;
     }
-    Texture2D generateVisuals(RenderTexture _humidityMap, RenderTexture _temperatureMap)
+    Texture2D generateVisuals(RenderTexture _humidityMap)
     {
         RenderTexture rw = new RenderTexture(gridSize.x, gridSize.y, 0);
         rw.enableRandomWrite = true;
         rw.Create();
 
         visualCompute.SetInts("resolution", gridSize.x, gridSize.y);
-        visualCompute.SetFloat("waterFactor", waterFactor);
+        visualCompute.SetFloat("waterCutoff", waterCutoff);
+        visualCompute.SetFloat("humidityStrength", humidityStrength);
 
-        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "result", rw);
+        visualCompute.SetFloats("water", waterColour.r, waterColour.g, waterColour.b);
+        visualCompute.SetFloats("base", baseColour.r, baseColour.g, baseColour.b);
+        visualCompute.SetFloats("dry", dryColour.r, dryColour.g, dryColour.b);
 
         visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "humidity", _humidityMap);
-        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "temperature", _temperatureMap);
+        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "result", rw);
 
         visualCompute.Dispatch(visualCompute.FindKernel("VisualGeneration"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
@@ -73,10 +87,12 @@ public class GridManager : MonoBehaviour
     {
         //Create data maps
         RenderTexture renderHumidity = generatePerlinNoise();
-        RenderTexture renderTemperature = generatePerlinNoise();
+
+        //Convert data maps to textures
+        humidityTexture = renderTexTo2D(renderHumidity);
 
         //Create visuals
-        Sprite sprite = Sprite.Create(generateVisuals(renderHumidity, renderTemperature), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
+        Sprite sprite = Sprite.Create(generateVisuals(renderHumidity), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
 

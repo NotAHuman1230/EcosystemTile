@@ -1,10 +1,14 @@
 #pragma kernel VisualGeneration
 
-float waterFactor;
+float waterCutoff;
+float humidityStrength;
+
+float3 water;
+float3 base;
+float3 dry;
 
 int2 resolution;
 RWTexture2D<float4> humidity;
-RWTexture2D<float4> temperature;
 RWTexture2D<float4> result;
 
 [numthreads(8,8,1)]
@@ -14,11 +18,16 @@ void VisualGeneration(uint3 id : SV_DispatchThreadID)
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         return;
 
-    if (humidity[id.xy].x >= waterFactor)
+    float humidityValue = humidity[id.xy].x / waterCutoff;
+    
+    if(humidityValue >= 1.0)
     {
-        result[id.xy] = float4(0.0, 0.0, 1.0, 1.0);
+        result[id.xy] = float4(water.x, water.y, water.z, 1.0);
         return;
     }
     
-    result[id.xy] = float4(0.0, 0.5, 0.0, 1.0);
+    humidityValue = clamp(humidityValue * humidityStrength, 0.0, 1.0);
+    float3 tileColour = lerp(dry, base, humidityValue);
+    
+    result[id.xy] = float4(tileColour.x, tileColour.y, tileColour.z, 1.0);
 }
