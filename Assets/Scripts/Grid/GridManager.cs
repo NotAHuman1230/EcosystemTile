@@ -16,16 +16,16 @@ public class GridManager : MonoBehaviour
     [SerializeField] int perlinCellSize;
     [SerializeField] float perlinIntensity;
 
-    Texture2D texture;
+    Texture2D humidityTexture;
 
     private void Start()
     {
-        texture = generateGrid();
-        Sprite sprite = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 1f / cellSize);
+        humidityTexture = generatePerlinNoise();
+        Sprite sprite = Sprite.Create(humidityTexture, new Rect(0f, 0f, humidityTexture.width, humidityTexture.height), new Vector2(0.5f, 0.5f), 1f / cellSize);
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
     
-    Texture2D generateGrid()
+    Texture2D generatePerlinNoise()
     {
         RenderTexture rw = new RenderTexture(gridSize.x, gridSize.y, 0);
         rw.enableRandomWrite = true;
@@ -46,8 +46,26 @@ public class GridManager : MonoBehaviour
         return tex;
     }
 
+    void generateMap()
+    {
+
+    }
+
     private void OnDrawGizmosSelected()
     {
-        
+        Vector2 originPosition = (Vector2)transform.position - ((Vector2)gridSize * cellSize / 2f);
+        for (int i = 0; i < gridSize.x; i++)
+        {
+            Vector2 start = originPosition + new Vector2(i * cellSize, 0f);
+            Vector2 end = originPosition + new Vector2(i * cellSize, gridSize.y * cellSize);
+            Debug.DrawLine(start, end, Color.black);
+        }
+
+        for (int i = 0; i < gridSize.y; i++)
+        {
+            Vector2 start = originPosition + new Vector2(0f, i * cellSize);
+            Vector2 end = originPosition + new Vector2(gridSize.x * cellSize, i * cellSize);
+            Debug.DrawLine(start, end, Color.black);
+        }
     }
 }
