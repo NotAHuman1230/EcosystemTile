@@ -1,0 +1,24 @@
+#pragma kernel VisualGeneration
+
+float waterFactor;
+
+int2 resolution;
+RWTexture2D<float4> humidity;
+RWTexture2D<float4> temperature;
+RWTexture2D<float4> result;
+
+[numthreads(8,8,1)]
+void VisualGeneration(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = id.xy / (float2)resolution.xy;
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+        return;
+
+    if (humidity[id.xy].x >= waterFactor)
+    {
+        result[id.xy] = float4(0.0, 0.0, 1.0, 1.0);
+        return;
+    }
+    
+    result[id.xy] = float4(0.0, 0.5, 0.0, 1.0);
+}

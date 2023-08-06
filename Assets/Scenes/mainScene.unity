@@ -225,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2104981729}
   - component: {fileID: 2104981728}
-  - component: {fileID: 2104981727}
+  - component: {fileID: 2104981730}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -233,23 +233,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2104981727
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2104981726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 288b4bab6ea6d8548a8661a2a55950ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  computeShader: {fileID: 7200000, guid: 6cabdb959785390469882fdf012a931d, type: 3}
-  gridSize: {x: 100, y: 100}
-  cellSize: 0.25
-  perlinCellSize: 4
-  perlinIntensity: 0.25
 --- !u!212 &2104981728
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -317,6 +300,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2104981730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104981726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 288b4bab6ea6d8548a8661a2a55950ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noiseCompute: {fileID: 7200000, guid: 6cabdb959785390469882fdf012a931d, type: 3}
+  visualCompute: {fileID: 7200000, guid: 9e0051c65cbd4164e94d5b26d00acb90, type: 3}
+  gridSize: {x: 100, y: 100}
+  cellSize: 0.25
+  perlinCellSize: 4
+  perlinIntensity: 0.25
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

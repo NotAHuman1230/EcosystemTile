@@ -28,28 +28,34 @@ void PerlinNoise (uint3 id : SV_DispatchThreadID)
     float2 gridId = floor(uv.xy * (float)gridSize);
     float2 gridUv = frac(uv.xy * (float)gridSize);
     
+    //Calculate position of corners
     float2 bl = gridId;
     float2 br = gridId + float2(1.0, 0.0);
     float2 tl = gridId + float2(0.0, 1.0);
     float2 tr = gridId + float2(1.0, 1.0);
     
+    //Generate random corner vectors
     float2 vectorBL = randomDirection(bl * seed);
     float2 vectorBR = randomDirection(br * seed);
     float2 vectorTL = randomDirection(tl * seed);
     float2 vectorTR = randomDirection(tr * seed);
 
+    //Calculate pixel vectors to corners
     float2 vecToBL = -gridUv;
     float2 vecToBR = float2(1.0, 0.0) - gridUv;
     float2 vecToTL = float2(0.0, 1.0) - gridUv;
     float2 vecToTR = float2(1.0, 1.0) - gridUv;
     
+    //Find dot products
     float dotBL = dot(vecToBL, vectorBL);
     float dotBR = dot(vecToBR, vectorBR);
     float dotTL = dot(vecToTL, vectorTL);
     float dotTR = dot(vecToTR, vectorTR);
     
+    //Smooth the pixels
     gridUv = smoothstep(0.0, 1.0, gridUv);
     
+    //Mix the pixels
     float b = lerp(dotBL, dotBR, gridUv.x);
     float t = lerp(dotTL, dotTR, gridUv.x);
     float noise = lerp(b, t, gridUv.y) + intensity;
