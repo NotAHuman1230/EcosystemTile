@@ -26,7 +26,10 @@ void VisualGeneration(uint3 id : SV_DispatchThreadID)
         return;
     }
     
+    //Use a function for interpolation maybe use smoothstep
+    
     humidityValue = clamp(humidityValue * humidityStrength, 0.0, 1.0);
+    humidityValue = smoothstep(0.0, 1.0, humidityValue);
     float3 tileColour = lerp(dry, base, humidityValue);
     
     result[id.xy] = float4(tileColour.x, tileColour.y, tileColour.z, 1.0);
