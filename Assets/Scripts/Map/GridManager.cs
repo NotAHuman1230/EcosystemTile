@@ -25,7 +25,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] int perlinCellSize;
     [SerializeField] float perlinIntensity;
 
-    Texture2D humidityTexture;
+    [SerializeField] Texture2D humidityTexture;
 
     private void Start()
     {
@@ -41,6 +41,7 @@ public class GridManager : MonoBehaviour
     {
         Texture2D tex = new Texture2D(gridSize.x, gridSize.y);
         RenderTexture.active = _renderTexture;
+        tex.filterMode = FilterMode.Point;
         tex.ReadPixels(new Rect(0f, 0f, _renderTexture.width, _renderTexture.height), 0, 0);
         tex.Apply();
         return tex;

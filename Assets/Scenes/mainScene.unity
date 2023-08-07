@@ -336,9 +336,10 @@ MonoBehaviour:
   humidityStrength: 1
   waterColour: {r: 0, g: 0.058670044, b: 1, a: 1}
   baseColour: {r: 0.15107274, g: 1, b: 0, a: 1}
-  dryColour: {r: 1, g: 0.49533176, b: 0, a: 1}
+  dryColour: {r: 1, g: 0.8660018, b: 0, a: 1}
   perlinCellSize: 4
   perlinIntensity: 0.85
+  humidityTexture: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
