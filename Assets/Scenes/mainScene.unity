@@ -228,9 +228,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3e0972c4dd29f4b8e075e2bee5c857, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  scaleFactor: 5
-  scaleRange: {x: 1, y: 25}
+  speed: 500
+  scaleFactor: 12
+  scaleMultiplier: 1
+  scaleRange: {x: 1, y: 50}
 --- !u!1 &2104981726
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +339,7 @@ MonoBehaviour:
   baseColour: {r: 0.045961607, g: 0.764151, b: 0, a: 1}
   dryColour: {r: 0.9813428, g: 1, b: 0, a: 1}
   perlinCellSize: 3
-  perlinIntensity: 1
+  perlinIntensity: 0.9
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
