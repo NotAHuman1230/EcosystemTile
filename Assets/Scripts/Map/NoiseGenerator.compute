@@ -21,7 +21,7 @@ float2 randomDirection(float2 uv)
 [numthreads(8,8,1)]
 void PerlinNoise (uint3 id : SV_DispatchThreadID)
 {   
-    float2 uv = id.xy / (float2)resolution.xy;
+    float2 uv = id.xy / ((float2) resolution.xy - float2(1.0, 1.0));
     
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         return;

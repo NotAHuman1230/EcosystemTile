@@ -22,7 +22,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] Color dryColour;
 
     [Header("Food Paramters")]
-    [SerializeField] float foodHumidityFactor;
+    [SerializeField] Vector2 foodHumidityFactor;
     [SerializeField] Vector2 foodGain;
     [SerializeField] Vector2 foodRange;
 
@@ -32,7 +32,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] float perlinIntensity;
 
     Texture2D humidityTexture;
-    Texture2D foodTexutre;
+    [SerializeField] Texture2D foodTexutre;
 
     private void Start()
     {
@@ -40,18 +40,28 @@ public class MapManager : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.T))
             generateMap();
+        else if (Input.GetKeyDown(KeyCode.Space))
+            updateFood();
+    }
+
+    RenderTexture createRenderTexture(int _width, int _height)
+    {
+        RenderTexture rt = new RenderTexture(_width, _height, 0);
+        rt.enableRandomWrite = true;
+        rt.Create();
+        return rt;
     }
 
     RenderTexture tex2DToRenderTex(Texture2D _texture)
     {
         RenderTexture rt = new RenderTexture(_texture.width, _texture.height, 0);
+        rt.enableRandomWrite = true;
         RenderTexture.active = rt;
         Graphics.Blit(_texture, rt);
         return rt;
-    }
-        
+    }  
     Texture2D renderTexTo2D(RenderTexture _renderTexture)
     {
         Texture2D tex = new Texture2D(gridSize.x, gridSize.y);
@@ -64,9 +74,7 @@ public class MapManager : MonoBehaviour
 
     RenderTexture generatePerlinNoise()
     {
-        RenderTexture rw = new RenderTexture(gridSize.x, gridSize.y, 0);
-        rw.enableRandomWrite = true;
-        rw.Create();
+        RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
         noiseCompute.SetInts("resolution", gridSize.x, gridSize.y);
         noiseCompute.SetInt("gridSize", perlinCellSize);
@@ -74,16 +82,14 @@ public class MapManager : MonoBehaviour
         noiseCompute.SetFloat("intensity", perlinIntensity);
         noiseCompute.SetFloat("cutOff", waterCutoff);
 
-        noiseCompute.SetTexture(noiseCompute.FindKernel("PerlinNoise"), "result", rw);
+        noiseCompute.SetTexture(noiseCompute.FindKernel("PerlinNoise"), "result", rt);
         noiseCompute.Dispatch(noiseCompute.FindKernel("PerlinNoise"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
-        return rw;
+        return rt;
     }
     Texture2D generateVisuals(RenderTexture _humidityMap)
     {
-        RenderTexture rw = new RenderTexture(gridSize.x, gridSize.y, 0);
-        rw.enableRandomWrite = true;
-        rw.Create();
+        RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
         visualCompute.SetInts("resolution", gridSize.x, gridSize.y);
         visualCompute.SetFloat("waterCutoff", waterCutoff);
@@ -94,11 +100,27 @@ public class MapManager : MonoBehaviour
         visualCompute.SetFloats("dry", dryColour.r, dryColour.g, dryColour.b);
 
         visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "humidity", _humidityMap);
-        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "result", rw);
+        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "result", rt);
 
         visualCompute.Dispatch(visualCompute.FindKernel("VisualGeneration"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
-        return renderTexTo2D(rw);
+        return renderTexTo2D(rt);
+    }
+    Texture2D initialiseFood(RenderTexture _humidityMap)
+    {
+        RenderTexture rt = new RenderTexture(gridSize.x, gridSize.y, 0);
+        rt.enableRandomWrite = true;
+        rt.Create();
+        foodCompute.SetInts("resolution", gridSize.x, gridSize.y);
+        foodCompute.SetFloat("seed", Random.Range(0f, 10f));
+        foodCompute.SetFloats("foodHumidityFactor", foodHumidityFactor.x, foodHumidityFactor.y);
+        foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
+
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "humidity", _humidityMap);
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "result", rt);
+        foodCompute.Dispatch(foodCompute.FindKernel("FoodInitialisation"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
+
+        return renderTexTo2D(rt);
     }
 
     void generateMap()
@@ -108,6 +130,7 @@ public class MapManager : MonoBehaviour
 
         //Convert data maps to textures
         humidityTexture = renderTexTo2D(renderHumidity);
+        foodTexutre = initialiseFood(renderHumidity);
 
         //Create visuals
         Sprite sprite = Sprite.Create(generateVisuals(renderHumidity), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
@@ -115,16 +138,19 @@ public class MapManager : MonoBehaviour
     }
     void updateFood()
     {
-        foodCompute.SetFloats("resolution", gridSize.x, gridSize.y);
-        foodCompute.SetFloat("deltaTime", Time.deltaTime);
-        foodCompute.SetFloat("foodHumidityFactor", foodHumidityFactor);
-        foodCompute.SetFloats("foodGain", foodGain.x, foodGain.y);
-        foodCompute.SetFloats("foodRange", foodRange.x, foodRange.y);
+        RenderTexture rt = tex2DToRenderTex(foodTexutre);
+
+        foodCompute.SetInts("resolution", gridSize.x, gridSize.y);
+        foodCompute.SetFloats("foodHumidityFactor", foodHumidityFactor.x, foodHumidityFactor.y);
+        foodCompute.SetFloats("foodGain", foodGain.x / 100f, foodGain.y / 100f);
+        foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
 
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "humidity", tex2DToRenderTex(humidityTexture));
-        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "result", tex2DToRenderTex(foodTexutre));
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "result", rt);
 
         foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
+    
+        foodTexutre = renderTexTo2D(rt);
     }
 
     private void OnDrawGizmosSelected()

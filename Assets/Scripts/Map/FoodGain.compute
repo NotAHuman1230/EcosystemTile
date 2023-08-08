@@ -1,30 +1,57 @@
 #pragma kernel FoodUpdate
+#pragma kernel FoodInitialisation
 
-float2 resolution;
-float deltaTime;
+int2 resolution;
 float2 foodHumidityFactor;
 float2 foodGain;
 float2 foodRange;
 RWTexture2D<float4> humidity;
 RWTexture2D<float4> result;
 
+float Random(float2 uv)
+{
+    return frac(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453123);
+}
+
 [numthreads(8,8,1)]
 void FoodUpdate (uint3 id : SV_DispatchThreadID)
 {
-    float2 uv = id.xy / resolution.xy;
-    if (uv.x > 0.0 && uv.x < 1.0 && uv.y > 0.0 && uv.y < 1.0)
+    float2 uv = id.xy / ((float2) resolution.xy - float2(1.0, 1.0));
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         return;
     
     if(humidity[id.xy].x >= 1.0)
+        return;
+    
+    float lerpValueGain = clamp(humidity[id.xy].x * foodHumidityFactor.x, 0.0, 1.0);
+    float lerpValueRange = clamp(humidity[id.xy].x * foodHumidityFactor.y, 0.0, 1.0);
+    float foodGainValue = lerp(foodGain.x, foodGain.y, lerpValueGain);
+    float foodRangeValue = lerp(foodRange.x, foodRange.y, lerpValueRange);
+    
+    float foodValue = result[id.xy].x + foodGainValue;
+    foodValue = clamp(foodValue, 0.0, foodRangeValue);
+    result[id.xy] = float4(foodValue, foodValue, foodValue, 1.0);
+}
+
+float seed;
+
+[numthreads(8, 8, 1)]
+void FoodInitialisation(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = id.xy / ((float2) resolution.xy - float2(1.0, 1.0));
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+        return;
+    
+    if (humidity[id.xy].x >= 1.0)
     {
-        result[id.xy] = float4(0.0, 0.0, 0.0, 0.0);
+        result[id.xy] = float4(0.0, 0.0, 0.0, 1.0);
         return;
     }
     
-    float foodGainValue = lerp(foodGain.x, foodGain.y, humidity[id.xy].x * foodHumidityFactor.x);
-    float foodRangeValue = lerp(foodRange.x, foodRange.y, humidity[id.xy].x * foodHumidityFactor.y);
-    
-    float foodValue = result[id.xy].x + (foodGainValue * deltaTime);
-    foodValue = clamp(foodValue, 0.0, foodRangeValue);
-    result[id.xy] = float4(foodValue, foodValue, foodValue, 1.0));
+    //Maybe initialise in regards to humidity
+    float lerpValue = clamp(humidity[id.xy].x * foodHumidityFactor.y, 0.0, 1.0);
+    float foodValue = lerp(foodRange.x, foodRange.y, lerpValue);
+    foodValue *= Random(uv * seed);
+    result[id.xy] = float4(foodValue, foodValue, foodValue, 1.0);
+
 }

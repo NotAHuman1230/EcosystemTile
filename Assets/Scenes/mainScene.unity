@@ -339,11 +339,12 @@ MonoBehaviour:
   waterColour: {r: 0, g: 0.058670044, b: 1, a: 1}
   baseColour: {r: 0.045961607, g: 0.764151, b: 0, a: 1}
   dryColour: {r: 0.9813428, g: 1, b: 0, a: 1}
-  foodHumidityFactor: 1
-  foodGain: {x: 0.01, y: 0.1}
-  foodRange: {x: 0.1, y: 1}
+  foodHumidityFactor: {x: 1, y: 1}
+  foodGain: {x: 2, y: 10}
+  foodRange: {x: 20, y: 100}
   perlinCellSize: 3
   perlinIntensity: 0.9
+  foodTexutre: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
