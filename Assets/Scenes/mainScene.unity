@@ -331,15 +331,14 @@ MonoBehaviour:
   noiseCompute: {fileID: 7200000, guid: 6cabdb959785390469882fdf012a931d, type: 3}
   visualCompute: {fileID: 7200000, guid: 9e0051c65cbd4164e94d5b26d00acb90, type: 3}
   gridSize: {x: 100, y: 100}
-  cellSize: 0.25
+  cellSize: 0.5
   waterCutoff: 1
   humidityStrength: 1
   waterColour: {r: 0, g: 0.058670044, b: 1, a: 1}
-  baseColour: {r: 0.15107274, g: 1, b: 0, a: 1}
-  dryColour: {r: 1, g: 0.8660018, b: 0, a: 1}
-  perlinCellSize: 4
-  perlinIntensity: 0.85
-  humidityTexture: {fileID: 0}
+  baseColour: {r: 0.045961607, g: 0.764151, b: 0, a: 1}
+  dryColour: {r: 0.9813428, g: 1, b: 0, a: 1}
+  perlinCellSize: 3
+  perlinIntensity: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

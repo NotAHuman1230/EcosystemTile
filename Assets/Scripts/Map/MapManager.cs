@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GridManager : MonoBehaviour
+public class MapManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] ComputeShader noiseCompute;
@@ -25,7 +25,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] int perlinCellSize;
     [SerializeField] float perlinIntensity;
 
-    [SerializeField] Texture2D humidityTexture;
+    Texture2D humidityTexture;
 
     private void Start()
     {
@@ -56,6 +56,7 @@ public class GridManager : MonoBehaviour
         noiseCompute.SetInt("gridSize", perlinCellSize);
         noiseCompute.SetFloat("seed", Random.Range(0f, 1f));
         noiseCompute.SetFloat("intensity", perlinIntensity);
+        noiseCompute.SetFloat("cutOff", waterCutoff);
 
         noiseCompute.SetTexture(noiseCompute.FindKernel("PerlinNoise"), "result", rw);
         noiseCompute.Dispatch(noiseCompute.FindKernel("PerlinNoise"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);

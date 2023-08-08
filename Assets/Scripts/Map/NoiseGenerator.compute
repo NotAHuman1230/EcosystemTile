@@ -4,6 +4,7 @@ int2 resolution;
 int gridSize;
 float seed;
 float intensity;
+float cutOff;
 RWTexture2D<float4> result;
 
 float Random(float2 uv)
@@ -58,7 +59,7 @@ void PerlinNoise (uint3 id : SV_DispatchThreadID)
     //Mix the pixels
     float b = lerp(dotBL, dotBR, gridUv.x);
     float t = lerp(dotTL, dotTR, gridUv.x);
-    float noise = lerp(b, t, gridUv.y) + intensity;
+    float noise = (lerp(b, t, gridUv.y) + intensity) / cutOff;
     
     result[id.xy] = float4(noise, noise, noise, 1.0);
 }

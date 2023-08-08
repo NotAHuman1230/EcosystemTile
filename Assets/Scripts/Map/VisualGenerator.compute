@@ -1,6 +1,5 @@
 #pragma kernel VisualGeneration
 
-float waterCutoff;
 float humidityStrength;
 
 float3 water;
@@ -17,18 +16,14 @@ void VisualGeneration(uint3 id : SV_DispatchThreadID)
     float2 uv = id.xy / (float2)resolution.xy;
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
         return;
-
-    float humidityValue = humidity[id.xy].x / waterCutoff;
     
-    if(humidityValue >= 1.0)
+    if (humidity[id.xy].x >= 1.0)
     {
         result[id.xy] = float4(water.x, water.y, water.z, 1.0);
         return;
     }
     
-    //Use a function for interpolation maybe use smoothstep
-    
-    humidityValue = clamp(humidityValue * humidityStrength, 0.0, 1.0);
+    float humidityValue = clamp(humidity[id.xy].x * humidityStrength, 0.0, 1.0);
     humidityValue = smoothstep(0.0, 1.0, humidityValue);
     float3 tileColour = lerp(dry, base, humidityValue);
     
