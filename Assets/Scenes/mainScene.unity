@@ -331,6 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noiseCompute: {fileID: 7200000, guid: 6cabdb959785390469882fdf012a931d, type: 3}
   visualCompute: {fileID: 7200000, guid: 9e0051c65cbd4164e94d5b26d00acb90, type: 3}
+  foodCompute: {fileID: 7200000, guid: 5b99736a191117d4ba6b0e9c8cbf24ca, type: 3}
   gridSize: {x: 100, y: 100}
   cellSize: 0.5
   waterCutoff: 1
@@ -338,6 +339,9 @@ MonoBehaviour:
   waterColour: {r: 0, g: 0.058670044, b: 1, a: 1}
   baseColour: {r: 0.045961607, g: 0.764151, b: 0, a: 1}
   dryColour: {r: 0.9813428, g: 1, b: 0, a: 1}
+  foodHumidityFactor: 1
+  foodGain: {x: 0.01, y: 0.1}
+  foodRange: {x: 0.1, y: 1}
   perlinCellSize: 3
   perlinIntensity: 0.9
 --- !u!1660057539 &9223372036854775807

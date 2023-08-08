@@ -8,6 +8,7 @@ public class MapManager : MonoBehaviour
     [Header("References")]
     [SerializeField] ComputeShader noiseCompute;
     [SerializeField] ComputeShader visualCompute;
+    [SerializeField] ComputeShader foodCompute;
 
     [Header("Map Parameters")]
     [SerializeField] Vector2Int gridSize;
@@ -20,12 +21,18 @@ public class MapManager : MonoBehaviour
     [SerializeField] Color baseColour;
     [SerializeField] Color dryColour;
 
+    [Header("Food Paramters")]
+    [SerializeField] float foodHumidityFactor;
+    [SerializeField] Vector2 foodGain;
+    [SerializeField] Vector2 foodRange;
+
 
     [Header("Perlin Noise")]
     [SerializeField] int perlinCellSize;
     [SerializeField] float perlinIntensity;
 
     Texture2D humidityTexture;
+    Texture2D foodTexutre;
 
     private void Start()
     {
@@ -37,6 +44,14 @@ public class MapManager : MonoBehaviour
             generateMap();
     }
 
+    RenderTexture tex2DToRenderTex(Texture2D _texture)
+    {
+        RenderTexture rt = new RenderTexture(_texture.width, _texture.height, 0);
+        RenderTexture.active = rt;
+        Graphics.Blit(_texture, rt);
+        return rt;
+    }
+        
     Texture2D renderTexTo2D(RenderTexture _renderTexture)
     {
         Texture2D tex = new Texture2D(gridSize.x, gridSize.y);
@@ -46,6 +61,7 @@ public class MapManager : MonoBehaviour
         tex.Apply();
         return tex;
     }
+
     RenderTexture generatePerlinNoise()
     {
         RenderTexture rw = new RenderTexture(gridSize.x, gridSize.y, 0);
@@ -96,6 +112,19 @@ public class MapManager : MonoBehaviour
         //Create visuals
         Sprite sprite = Sprite.Create(generateVisuals(renderHumidity), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
         GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+    void updateFood()
+    {
+        foodCompute.SetFloats("resolution", gridSize.x, gridSize.y);
+        foodCompute.SetFloat("deltaTime", Time.deltaTime);
+        foodCompute.SetFloat("foodHumidityFactor", foodHumidityFactor);
+        foodCompute.SetFloats("foodGain", foodGain.x, foodGain.y);
+        foodCompute.SetFloats("foodRange", foodRange.x, foodRange.y);
+
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "humidity", tex2DToRenderTex(humidityTexture));
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "result", tex2DToRenderTex(foodTexutre));
+
+        foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
     }
 
     private void OnDrawGizmosSelected()
