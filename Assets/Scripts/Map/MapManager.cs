@@ -31,14 +31,10 @@ public class MapManager : MonoBehaviour
     [SerializeField] Vector2 foodGain;
     [SerializeField] Vector2 foodRange;
 
-    Texture2D waterTexture;
-    Texture2D dessertTexture;
-    Texture2D foodTexutre;
+    [HideInInspector] public Texture2D waterTexture;
+    [HideInInspector] public Texture2D dessertTexture;
+    [HideInInspector] public Texture2D foodTexutre;
 
-    private void Start()
-    {
-        generateMap();
-    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
@@ -113,7 +109,7 @@ public class MapManager : MonoBehaviour
         return renderTexTo2D(rt);
     }
 
-    void generateMap()
+    public void generateMap()
     {
         //Create data maps
         waterTexture = renderTexTo2D(generatePerlinNoise(waterCutOff, perlinWaterCellSize, perlinWaterIntensity));
@@ -124,7 +120,7 @@ public class MapManager : MonoBehaviour
         Sprite sprite = Sprite.Create(generateVisuals(waterTexture, dessertTexture), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
-    void updateFood()
+    public void updateFood()
     {
         RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
