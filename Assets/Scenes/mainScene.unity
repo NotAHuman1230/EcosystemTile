@@ -341,12 +341,10 @@ MonoBehaviour:
   baseColour: {r: 0.045961607, g: 0.764151, b: 0, a: 1}
   dessertColour: {r: 0.9712478, g: 1, b: 0, a: 1}
   dessertCutOff: 1
-  perlinDessertIntensity: 0.9
-  perlinDessertCellSize: 3
+  perlinDessertIntensity: 1
+  perlinDessertCellSize: 2
   foodGain: {x: 2, y: 10}
   foodRange: {x: 20, y: 100}
-  perlinCellSize: 3
-  perlinIntensity: 0.9
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

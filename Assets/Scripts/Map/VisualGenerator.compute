@@ -22,7 +22,8 @@ void VisualGeneration(uint3 id : SV_DispatchThreadID)
         return;
     }
     
-    float3 tileColour = lerp(dry, base, dessertTexture[id.xy].x);
+    float dessertValue = smoothstep(0.0, 1.0, dessertTexture[id.xy].x);
+    float3 tileColour = lerp(dry, base, dessertValue);
     
     result[id.xy] = float4(tileColour.x, tileColour.y, tileColour.z, 1.0);
 }
