@@ -294,8 +294,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 500
-  scaleFactor: 12
-  scaleMultiplier: 1
+  scaleFactor: 25
+  scaleMultiplier: 2
   scaleRange: {x: 1, y: 50}
 --- !u!1 &1893737697
 GameObject:

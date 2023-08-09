@@ -39,12 +39,12 @@ public class CameraMovement : MonoBehaviour
     }
     void scale()
     {
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.Q))
         {
             camera.orthographicSize += scaleFactor * multiplier * Time.deltaTime;
             multiplier += scaleMultiplier * Time.deltaTime;
         }
-        else if (Input.GetKey(KeyCode.Q))
+        else if (Input.GetKey(KeyCode.E))
         {
             camera.orthographicSize -= scaleFactor * multiplier * Time.deltaTime;
             multiplier += scaleMultiplier * Time.deltaTime;
