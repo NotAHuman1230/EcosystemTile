@@ -16,7 +16,7 @@ public class MainManager : MonoBehaviour
         mapManager.generateMap();
         animalManager.generateAnimals(mapManager.waterTexture);
 
-        animalManager.animalsUpdate();
+        animalManager.animalsUpdate(mapManager.waterTexture, mapManager.desertTexture);
 
         StartCoroutine(delayedUpdate());
     }

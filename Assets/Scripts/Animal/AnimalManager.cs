@@ -52,7 +52,7 @@ public class AnimalManager : MonoBehaviour
         
         while(arrOneAmount > i && arrTwoAmount > j)
         {
-            if (animals[_start + i].getAgility() > animals[_mid + j + 1].getAgility())
+            if (animals[_start + i].getGeneValue("Agility") > animals[_mid + j + 1].getGeneValue("Agility"))
             {
                 list.Add(animals[_start + i]);
                 i++;
