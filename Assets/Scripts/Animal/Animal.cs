@@ -20,8 +20,11 @@ public class Animal : MonoBehaviour
 
     float calulatedHungerUsage()
     {
+        float hungerCost = 0f;
+        foreach (Gene gene in genes)
+            hungerCost += gene.value * gene.energyCost;
 
-        return 0;
+        return hungerCost;
     }
     void mutate()
     {
@@ -64,6 +67,8 @@ public class Animal : MonoBehaviour
     public void deciding() 
     {
         hunger -= calulatedHungerUsage();
+        if (hunger <= 0f)
+            Destroy(gameObject);
     }
     void searchingFood() { }
     void searchingMate() { }
@@ -71,4 +76,8 @@ public class Animal : MonoBehaviour
     void huntingAnimal() { }
     void mating() { }
 
+    private void OnDestroy()
+    {
+        manager.animals.Remove(this);
+    }
 }
