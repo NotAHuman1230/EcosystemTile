@@ -68,6 +68,14 @@ public class AnimalManager : MonoBehaviour
         for (int k = 0; k < list.Count; k++) { animals[_start + k] = list[k]; }
     }
 
+    public void reproduction(Animal _father, Animal _mother, Vector2Int _position)
+    {
+        GameObject instance = Instantiate(animalPrefab, animalParent);
+        Animal instanceScript = instance.GetComponent<Animal>();
+        instanceScript.born(_father, _mother, _position);
+        animals.Add(instanceScript);
+    }
+
     public void generateAnimals(Texture2D _available)
     {
         for (int i = 0; i < animalAmount; i++)
@@ -82,8 +90,5 @@ public class AnimalManager : MonoBehaviour
     public void animalsUpdate()
     {
         mergeSortAnimals(0, animalAmount - 1);
-
-        foreach (Animal animal in animals)
-            Debug.Log(animal.getAgility());
     }
 }
