@@ -32,7 +32,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] Vector2 foodRange;
 
     [HideInInspector] public Texture2D waterTexture;
-    [HideInInspector] public Texture2D dessertTexture;
+    [HideInInspector] public Texture2D desertTexture;
     [HideInInspector] public Texture2D foodTexutre;
 
     private void Update()
@@ -113,11 +113,11 @@ public class MapManager : MonoBehaviour
     {
         //Create data maps
         waterTexture = renderTexTo2D(generatePerlinNoise(waterCutOff, perlinWaterCellSize, perlinWaterIntensity));
-        dessertTexture = renderTexTo2D(generatePerlinNoise(dessertCutOff, perlinDessertCellSize, perlinDessertIntensity));
-        foodTexutre = initialiseFood(waterTexture, dessertTexture);
+        desertTexture = renderTexTo2D(generatePerlinNoise(dessertCutOff, perlinDessertCellSize, perlinDessertIntensity));
+        foodTexutre = initialiseFood(waterTexture, desertTexture);
 
         //Create visuals
-        Sprite sprite = Sprite.Create(generateVisuals(waterTexture, dessertTexture), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
+        Sprite sprite = Sprite.Create(generateVisuals(waterTexture, desertTexture), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
     public void updateFood()
@@ -129,7 +129,7 @@ public class MapManager : MonoBehaviour
         foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
 
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "water", waterTexture);
-        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "dessert", dessertTexture);
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "dessert", desertTexture);
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "result", rt);
 
         foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);

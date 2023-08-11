@@ -5,7 +5,7 @@ int2 resolution;
 float2 foodGain;
 float2 foodRange;
 Texture2D<float4> water;
-Texture2D<float4> dessert;
+Texture2D<float4> desert;
 RWTexture2D<float4> result;
 
 float Random(float2 uv)
@@ -23,8 +23,8 @@ void FoodUpdate (uint3 id : SV_DispatchThreadID)
     if(water[id.xy].x >= 1.0)
         return;
     
-    float lerpValueGain = clamp(dessert[id.xy].x, 0.0, 1.0);
-    float lerpValueRange = clamp(dessert[id.xy].x, 0.0, 1.0);
+    float lerpValueGain = clamp(desert[id.xy].x, 0.0, 1.0);
+    float lerpValueRange = clamp(desert[id.xy].x, 0.0, 1.0);
     float foodGainValue = lerp(foodGain.x, foodGain.y, lerpValueGain);
     float foodRangeValue = lerp(foodRange.x, foodRange.y, lerpValueRange);
     
@@ -49,7 +49,7 @@ void FoodInitialisation(uint3 id : SV_DispatchThreadID)
     }
     
     //Maybe initialise in regards to humidity
-    float lerpValue = clamp(dessert[id.xy].x, 0.0, 1.0);
+    float lerpValue = clamp(desert[id.xy].x, 0.0, 1.0);
     float foodValue = lerp(foodRange.x, foodRange.y, lerpValue);
     foodValue *= Random(uv * seed);
     result[id.xy] = float4(foodValue, foodValue, foodValue, 1.0);

@@ -11,7 +11,9 @@ public class AnimalManager : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] int animalAmount;
 
-    List<Animal> animals = new List<Animal>();
+    [HideInInspector] public List<Animal> animals = new List<Animal>();
+    [HideInInspector] public Texture2D water;
+    [HideInInspector] public Texture2D desert;
 
     Vector2Int randomPosition(Texture2D _available)
     {
@@ -87,8 +89,14 @@ public class AnimalManager : MonoBehaviour
             animals.Add(instanceScript);
         }
     }
-    public void animalsUpdate()
+    public void animalsUpdate(Texture2D _water, Texture2D _desert)
     {
+        water = _water;
+        desert = _desert;
+
         mergeSortAnimals(0, animalAmount - 1);
+
+        foreach (Animal animal in animals)
+            animal.deciding();
     }
 }
