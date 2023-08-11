@@ -93,5 +93,11 @@ public class Animal : MonoBehaviour
     }
 
     //Update states
+    void deciding() { }
+    void searchingFood() { }
+    void searchingMate() { }
+    void huntingPlants() { }
+    void huntingAnimal() { }
+    void mating() { }
 
 }
