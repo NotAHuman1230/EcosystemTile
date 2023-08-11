@@ -45,50 +45,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mutationRate: 0.05
+  valueMax: 1
+  mutationMax: 0.1
   genes:
   - name: Agility
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   - name: Speed
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   - name: Stealth
-    valueMax: 10
-    mutationMax: 1
     energyCost: 0.1
     value: 0
   - name: Carnivory
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 0
     value: 0
   - name: Offence
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   - name: Defence
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   - name: MatingDesire
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   - name: MateBenefit
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   - name: PredatorAversion
-    valueMax: 1
-    mutationMax: 0.01
     energyCost: 10
     value: 0
   manager: {fileID: 0}

@@ -9,6 +9,8 @@ public class Animal : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField] float mutationRate;
+    [SerializeField] float valueMax;
+    [SerializeField] float mutationMax;
     [SerializeField] List<Gene> genes = new List<Gene>();
 
     //Private references
@@ -28,7 +30,8 @@ public class Animal : MonoBehaviour
     }
     void mutate()
     {
-        
+        int index = Random.Range(0, genes.Count);
+        genes[index].value += Random.Range(-mutationMax, mutationMax);
     }
 
     public float getGeneValue(string _name)
@@ -49,7 +52,7 @@ public class Animal : MonoBehaviour
         hunger = 50f;
 
         foreach(Gene gene in genes)
-            gene.value = Random.Range(0f, gene.valueMax);
+            gene.value = Random.Range(0f, valueMax);
     }
     public void born(Animal _father, Animal _mother, Vector2 _position)
     {
@@ -69,9 +72,24 @@ public class Animal : MonoBehaviour
         hunger -= calulatedHungerUsage();
         if (hunger <= 0f)
             Destroy(gameObject);
+
+        if (hunger >= getGeneValue("MatingDesire"))
+            searchingMate();
+        else
+        {
+            float foodType = Random.Range(0f, 1f);
+            if (foodType < getGeneValue("Carnivory"))
+                searchingAnimals();
+            else
+                searchingPlants();
+        }
     }
-    void searchingFood() { }
-    void searchingMate() { }
+    void searchingMate() 
+    {
+    
+    }
+    void searchingPlants() { }
+    void searchingAnimals() { }
     void huntingPlants() { }
     void huntingAnimal() { }
     void mating() { }
