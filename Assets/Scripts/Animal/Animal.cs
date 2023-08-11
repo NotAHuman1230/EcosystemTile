@@ -33,6 +33,7 @@ public class Animal : MonoBehaviour
     float defense;
     float matingDesire;
 
+    public float getAgility() { return agility; }
     public void initialiseAnimal(Vector2Int _position)
     {
         position = _position;

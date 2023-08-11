@@ -44,16 +44,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b0c520ad8494a9d088129e801760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mutationRate: 0
-  speedMax: 0
-  speedMutationMax: 0
-  agilityMax: 0
-  agilityMutationMax: 0
-  eyeSightMax: 0
-  eyeSightMutationMax: 0
-  offenseMax: 0
-  offenseMutationMax: 0
-  defenseMax: 0
-  defenseMutationMax: 0
-  matingDesireMax: 0
-  matingDesireMutationMax: 0
+  mutationRate: 0.01
+  speedMax: 10
+  speedMutationMax: 1
+  agilityMax: 10
+  agilityMutationMax: 1
+  eyeSightMax: 10
+  eyeSightMutationMax: 1
+  offenseMax: 10
+  offenseMutationMax: 1
+  defenseMax: 10
+  defenseMutationMax: 1
+  matingDesireMax: 10
+  matingDesireMutationMax: 1

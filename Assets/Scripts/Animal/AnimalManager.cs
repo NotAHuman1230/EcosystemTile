@@ -11,7 +11,7 @@ public class AnimalManager : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] int animalAmount;
 
-    List<GameObject> animals = new List<GameObject>();
+    List<Animal> animals = new List<Animal>();
 
     Vector2Int randomPosition(Texture2D _available)
     {
@@ -28,14 +28,62 @@ public class AnimalManager : MonoBehaviour
         return position;
     }
 
+    void mergeSortAnimals(int _start, int _end)
+    {
+        int mid = (_end + _start) / 2;
+
+        if (_end - _start > 1)
+        {
+            mergeSortAnimals(_start, mid);
+            mergeSortAnimals(mid + 1, _end);
+        }
+        sortAnimals(_start, mid, _end);
+    }
+    void sortAnimals(int _start, int _mid, int _end)
+    {
+        int arrOneAmount = _mid - _start + 1;
+        int arrTwoAmount = _end - _mid;
+
+        List<Animal> list = new List<Animal>();
+        int i = 0;
+        int j = 0;
+        
+        while(arrOneAmount > i && arrTwoAmount > j)
+        {
+            if (animals[_start + i].getAgility() > animals[_mid + j + 1].getAgility())
+            {
+                list.Add(animals[_start + i]);
+                i++;
+            }
+            else
+            {
+                list.Add(animals[_mid + j + 1]);
+                j++;
+            }
+        }
+
+        while(arrOneAmount > i) { list.Add(animals[_start + i]); i++; }
+        while(arrTwoAmount > j) { list.Add(animals[_mid + j + 1]); j++; }
+
+        for (int k = 0; k < list.Count; k++) { animals[_start + k] = list[k]; }
+    }
+
     public void generateAnimals(Texture2D _available)
     {
         for (int i = 0; i < animalAmount; i++)
         {
             Vector2Int position = randomPosition(_available);
             GameObject instance = Instantiate(animalPrefab, animalParent);
-            instance.GetComponent<Animal>().initialiseAnimal(position);
-            animals.Add(instance);
+            Animal instanceScript = instance.GetComponent<Animal>();
+            instanceScript.initialiseAnimal(position);
+            animals.Add(instanceScript);
         }
+    }
+    public void animalsUpdate()
+    {
+        mergeSortAnimals(0, animalAmount - 1);
+
+        foreach (Animal animal in animals)
+            Debug.Log(animal.getAgility());
     }
 }
