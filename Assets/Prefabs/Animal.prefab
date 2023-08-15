@@ -69,10 +69,13 @@ MonoBehaviour:
   - name: MatingDesire
     energyCost: 10
     value: 0
-  - name: MateBenefit
+  - name: DesireBenefit
     energyCost: 10
     value: 0
   - name: PredatorAversion
+    energyCost: 10
+    value: 0
+  - name: TemperatureResistance
     energyCost: 10
     value: 0
   manager: {fileID: 0}

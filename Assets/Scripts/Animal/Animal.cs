@@ -66,6 +66,10 @@ public class Animal : MonoBehaviour
         if(mutationChance < mutationRate) mutate();
     }
 
+    //TODO:
+    //Enum for searching rather than sepearate methods
+    //Get surroundings should involve stealth
+
     //Update states
     public void deciding() 
     {
@@ -73,7 +77,7 @@ public class Animal : MonoBehaviour
         if (hunger <= 0f)
             Destroy(gameObject);
 
-        if (hunger >= getGeneValue("MatingDesire"))
+        if (hunger >= getGeneValue("MatingDesire") * 100f)
             searchingMate();
         else
         {
@@ -86,7 +90,7 @@ public class Animal : MonoBehaviour
     }
     void searchingMate() 
     {
-    
+        
     }
     void searchingPlants() { }
     void searchingAnimals() { }
@@ -96,6 +100,6 @@ public class Animal : MonoBehaviour
 
     private void OnDestroy()
     {
-        manager.animals.Remove(this);
+        manager.death(this, position);
     }
 }

@@ -14,9 +14,7 @@ public class MainManager : MonoBehaviour
     private void Start()
     {
         mapManager.generateMap();
-        animalManager.generateAnimals(mapManager.waterTexture);
-
-        animalManager.animalsUpdate(mapManager.waterTexture, mapManager.desertTexture);
+        animalManager.generateAnimals(mapManager.waterTexture, mapManager.desertTexture);
 
         StartCoroutine(delayedUpdate());
     }
@@ -28,6 +26,7 @@ public class MainManager : MonoBehaviour
     IEnumerator delayedUpdate()
     {
         mapManager.updateFood();
+        animalManager.updateAnimals();
 
         yield return new WaitForSeconds(updateDelay);
         StartCoroutine(delayedUpdate());

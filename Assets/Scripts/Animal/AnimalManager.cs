@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AnimalManager : MonoBehaviour
@@ -11,7 +12,8 @@ public class AnimalManager : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] int animalAmount;
 
-    [HideInInspector] public List<Animal> animals = new List<Animal>();
+    List<Animal> animals = new List<Animal>();
+    List<List<List<Animal>>> animalCells = new List<List<List<Animal>>>();
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
 
@@ -70,30 +72,58 @@ public class AnimalManager : MonoBehaviour
         for (int k = 0; k < list.Count; k++) { animals[_start + k] = list[k]; }
     }
 
+    List<List<List<Animal>>> getSurroundings(Vector2Int _position, int _range)
+    {
+        List<List<List<Animal>>> surroundings = new List<List<List<Animal>>>();
+        for(int y = 0; y < _range; y++)
+        {
+            List<List<Animal>> row = new List<List<Animal>>();
+            for (int x = 0; x < _range; x++)
+                row.Add(animalCells[_position.y + y][_position.x]);
+            surroundings.Add(row);
+        }
+
+        return surroundings;
+    }
+
     public void reproduction(Animal _father, Animal _mother, Vector2Int _position)
     {
         GameObject instance = Instantiate(animalPrefab, animalParent);
         Animal instanceScript = instance.GetComponent<Animal>();
         instanceScript.born(_father, _mother, _position);
         animals.Add(instanceScript);
+        animalCells[_position.y][_position.x].Add(instanceScript);
+    }
+    public void death(Animal _self, Vector2Int _positon)
+    {
+        animals.Remove(_self);
+        animalCells[_positon.y][_positon.x].Remove(_self);
     }
 
-    public void generateAnimals(Texture2D _available)
-    {
-        for (int i = 0; i < animalAmount; i++)
-        {
-            Vector2Int position = randomPosition(_available);
-            GameObject instance = Instantiate(animalPrefab, animalParent);
-            Animal instanceScript = instance.GetComponent<Animal>();
-            instanceScript.initialiseAnimal(position);
-            animals.Add(instanceScript);
-        }
-    }
-    public void animalsUpdate(Texture2D _water, Texture2D _desert)
+    public void generateAnimals(Texture2D _water, Texture2D _desert)
     {
         water = _water;
         desert = _desert;
 
+        for (int y = 0; y < _water.Size().y; y++)
+        {
+            animalCells.Add(new List<List<Animal>>());
+            for(int x = 0; x < _water.Size().x; x++)
+                animalCells[y].Add(new List<Animal>());
+        }
+
+        for (int i = 0; i < animalAmount; i++)
+        {
+            Vector2Int position = randomPosition(_water);
+            GameObject instance = Instantiate(animalPrefab, animalParent);
+            Animal instanceScript = instance.GetComponent<Animal>();
+            instanceScript.initialiseAnimal(position);
+            animals.Add(instanceScript);
+            animalCells[position.y][position.x].Add(instanceScript);
+        }
+    }
+    public void updateAnimals()
+    {
         mergeSortAnimals(0, animalAmount - 1);
 
         foreach (Animal animal in animals)
