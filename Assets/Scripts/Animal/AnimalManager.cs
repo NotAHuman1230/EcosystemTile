@@ -81,8 +81,11 @@ public class AnimalManager : MonoBehaviour
                 if (y + _position.y >= water.height || x + _position.x >= water.width)
                     continue;
 
-
-                surroundings[y, x] = animalCells[_position.y + y, _position.x + x];
+                for (int i = 0; i < animalCells[_position.y + y, _position.x + x].Count; i++)
+                {
+                    if(surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(0f, 1f) >= surroundings[y, x][i].getGeneValue("Stealth"))
+                        surroundings[y, x].Add(animalCells[_position.y + y, _position.x + x][i]);
+                }
             }
 
         return surroundings;
