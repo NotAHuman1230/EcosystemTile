@@ -48,6 +48,59 @@ public class Animal : MonoBehaviour
         Debug.LogError("Gene value not found!");
         return 0f;
     }
+    Vector2Int findClosestCell(Vector2Int _position, int _range)
+    {
+        int middle = ((_range - 3) / 2) + 1;
+        float closestDistance = Mathf.Infinity;
+        Vector2Int closestVector = Vector2Int.zero;
+
+        for (int y = 0; y < _range; y++)
+            for (int x = 0; x < _range; x++)
+            {
+                float distance = Vector2Int.Distance(_position, new Vector2Int(x + middle, y + middle));
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestVector = new Vector2Int(x, y);
+                }
+            }
+
+        return closestVector;
+    }
+    public float[,] generateCellChances(List<Animal>[,] _surroundings, int _range)
+    {
+        float[,] chances = {{0, 0, 0 }, {0, 0, 0 }, {0, 0, 0 }};
+
+        for (int y = 0; y < _surroundings.GetLength(0); y++)
+            for (int x = 0; x < _surroundings.GetLength(1); x++)
+            {
+                float effect = 0f;
+
+                for (int i = 0; i < _surroundings[y, x].Count; i++)
+                {
+                    if (_surroundings[y, x][i].behaviour == Behaviour.dangerous)
+                        effect -= getGeneValue("PredatorAversion");
+                    else if (_surroundings[y, x][i].behaviour == Behaviour.safe && behaviour == Behaviour.safe)
+                        effect -= getGeneValue("CrowdAversion");
+                    else if (_surroundings[y, x][i].behaviour == Behaviour.mating && behaviour == Behaviour.mating)
+                        effect += getGeneValue("DesireBenefit");
+                    else if(_surroundings[y, x][i].behaviour == Behaviour.safe && behaviour == Behaviour.dangerous)
+                        effect += getGeneValue("DesireBenefit");
+                }
+
+                Vector2Int pos = new Vector2Int(x, y);
+                Vector2Int closestCell = findClosestCell(pos, _range);
+                float distance = Vector2Int.Distance(pos, closestCell);
+                int furthestPoint = (_range - 3) / 2;
+                float deteriation = distance / Vector2Int.Distance(new Vector2Int(0, 0), new Vector2Int(furthestPoint, furthestPoint));
+                effect *= (1f - deteriation);
+
+                chances[closestCell.y, closestCell.x] += effect;
+            }
+
+        return chances;
+    }
+    
 
     public void initialiseAnimal(Vector2Int _position)
     {
@@ -68,10 +121,6 @@ public class Animal : MonoBehaviour
         float mutationChance = Random.Range(0f, 1f);
         if(mutationChance < mutationRate) mutate();
     }
-
-    //TODO:
-    //Enum for searching rather than sepearate methods
-    //Get surroundings should involve stealth
 
     //State control
     public void pickBehaviour()
@@ -94,9 +143,8 @@ public class Animal : MonoBehaviour
     public void searching() 
     {
         int range = Mathf.RoundToInt(maxSightRange * getGeneValue("Sight"));
+        float[,] chances = generateCellChances(manager.getSurroundings(position, range), range);
 
-
-        
     }
     void hunting() { }
     void mating() { }

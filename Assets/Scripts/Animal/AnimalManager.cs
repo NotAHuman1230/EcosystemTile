@@ -77,7 +77,13 @@ public class AnimalManager : MonoBehaviour
         List<Animal>[,] surroundings = new List<Animal>[_range, _range];
         for (int y = 0; y < _range; y++)
             for (int x = 0; x < _range; x++)
-                    surroundings[y, x] = animalCells[_position.y + y, _position.x + x];
+            {
+                if (y + _position.y >= water.height || x + _position.x >= water.width)
+                    continue;
+
+
+                surroundings[y, x] = animalCells[_position.y + y, _position.x + x];
+            }
 
         return surroundings;
     }

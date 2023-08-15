@@ -47,6 +47,7 @@ MonoBehaviour:
   mutationRate: 0.05
   valueMax: 1
   mutationMax: 0.1
+  maxSightRange: 0
   genes:
   - name: Agility
     energyCost: 10
@@ -73,6 +74,9 @@ MonoBehaviour:
     energyCost: 10
     value: 0
   - name: PredatorAversion
+    energyCost: 10
+    value: 0
+  - name: CrowdAversion
     energyCost: 10
     value: 0
   - name: TemperatureResistance
