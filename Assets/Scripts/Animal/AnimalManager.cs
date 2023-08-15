@@ -79,7 +79,16 @@ public class AnimalManager : MonoBehaviour
         {
             List<List<Animal>> row = new List<List<Animal>>();
             for (int x = 0; x < _range; x++)
+            {
+                List<Animal> cell = new List<Animal>();
+                for (int i = 0; i < animalCells[_position.y + y][_position.x].Count; i++)
+                {
+                    Animal animal = animalCells[_position.y + y][_position.x][i];
+                    if (animal.behaviour != Behaviour.dangerous && Random.Range(0f, 1f) >= animal.getGeneValue("Stealth"))
+                        cell.Add(animal);
+                }
                 row.Add(animalCells[_position.y + y][_position.x]);
+            }
             surroundings.Add(row);
         }
 
@@ -124,9 +133,12 @@ public class AnimalManager : MonoBehaviour
     }
     public void updateAnimals()
     {
+        foreach (Animal animal in animals)
+            animal.pickBehaviour();
+
         mergeSortAnimals(0, animalAmount - 1);
 
         foreach (Animal animal in animals)
-            animal.deciding();
+            animal.searching();
     }
 }

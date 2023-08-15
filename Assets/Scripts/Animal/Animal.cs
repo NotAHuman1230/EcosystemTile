@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
+public enum Behaviour { dangerous, safe, mating }
 public class Animal : MonoBehaviour
 {
 
@@ -13,8 +14,9 @@ public class Animal : MonoBehaviour
     [SerializeField] float mutationMax;
     [SerializeField] List<Gene> genes = new List<Gene>();
 
-    //Private references
+    //Public variables
     [HideInInspector] public AnimalManager manager;
+    [HideInInspector] public Behaviour behaviour;
 
     //Base
     Vector2Int position;
@@ -70,32 +72,29 @@ public class Animal : MonoBehaviour
     //Enum for searching rather than sepearate methods
     //Get surroundings should involve stealth
 
-    //Update states
-    public void deciding() 
+    //State control
+    public void pickBehaviour()
     {
         hunger -= calulatedHungerUsage();
         if (hunger <= 0f)
             Destroy(gameObject);
 
         if (hunger >= getGeneValue("MatingDesire") * 100f)
-            searchingMate();
+            behaviour = Behaviour.mating;
         else
         {
             float foodType = Random.Range(0f, 1f);
             if (foodType < getGeneValue("Carnivory"))
-                searchingAnimals();
+                behaviour = Behaviour.dangerous;
             else
-                searchingPlants();
+                behaviour = Behaviour.safe;
         }
     }
-    void searchingMate() 
+    public void searching() 
     {
-        
+    
     }
-    void searchingPlants() { }
-    void searchingAnimals() { }
-    void huntingPlants() { }
-    void huntingAnimal() { }
+    void hunting() { }
     void mating() { }
 
     private void OnDestroy()
