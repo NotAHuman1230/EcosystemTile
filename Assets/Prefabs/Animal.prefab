@@ -51,7 +51,7 @@ MonoBehaviour:
   - name: Agility
     energyCost: 10
     value: 0
-  - name: Speed
+  - name: Sight
     energyCost: 10
     value: 0
   - name: Stealth
@@ -79,3 +79,4 @@ MonoBehaviour:
     energyCost: 10
     value: 0
   manager: {fileID: 0}
+  behaviour: 0

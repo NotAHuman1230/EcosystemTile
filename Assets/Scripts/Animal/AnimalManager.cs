@@ -12,8 +12,8 @@ public class AnimalManager : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] int animalAmount;
 
-    List<Animal> animals = new List<Animal>();
-    List<List<List<Animal>>> animalCells = new List<List<List<Animal>>>();
+    List<Animal> animals;
+    List<Animal>[,] animalCells;
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
 
@@ -72,25 +72,12 @@ public class AnimalManager : MonoBehaviour
         for (int k = 0; k < list.Count; k++) { animals[_start + k] = list[k]; }
     }
 
-    List<List<List<Animal>>> getSurroundings(Vector2Int _position, int _range)
+    public List<Animal>[,] getSurroundings(Vector2Int _position, int _range)
     {
-        List<List<List<Animal>>> surroundings = new List<List<List<Animal>>>();
-        for(int y = 0; y < _range; y++)
-        {
-            List<List<Animal>> row = new List<List<Animal>>();
+        List<Animal>[,] surroundings = new List<Animal>[_range, _range];
+        for (int y = 0; y < _range; y++)
             for (int x = 0; x < _range; x++)
-            {
-                List<Animal> cell = new List<Animal>();
-                for (int i = 0; i < animalCells[_position.y + y][_position.x].Count; i++)
-                {
-                    Animal animal = animalCells[_position.y + y][_position.x][i];
-                    if (animal.behaviour != Behaviour.dangerous && Random.Range(0f, 1.333f) >= animal.getGeneValue("Stealth"))
-                        cell.Add(animal);
-                }
-                row.Add(animalCells[_position.y + y][_position.x]);
-            }
-            surroundings.Add(row);
-        }
+                    surroundings[y, x] = animalCells[_position.y + y, _position.x + x];
 
         return surroundings;
     }
@@ -101,12 +88,12 @@ public class AnimalManager : MonoBehaviour
         Animal instanceScript = instance.GetComponent<Animal>();
         instanceScript.born(_father, _mother, _position);
         animals.Add(instanceScript);
-        animalCells[_position.y][_position.x].Add(instanceScript);
+        animalCells[_position.y, _position.x].Add(instanceScript);
     }
     public void death(Animal _self, Vector2Int _positon)
     {
         animals.Remove(_self);
-        animalCells[_positon.y][_positon.x].Remove(_self);
+        animalCells[_positon.y, _positon.x].Remove(_self);
     }
 
     public void generateAnimals(Texture2D _water, Texture2D _desert)
@@ -114,12 +101,7 @@ public class AnimalManager : MonoBehaviour
         water = _water;
         desert = _desert;
 
-        for (int y = 0; y < _water.Size().y; y++)
-        {
-            animalCells.Add(new List<List<Animal>>());
-            for(int x = 0; x < _water.Size().x; x++)
-                animalCells[y].Add(new List<Animal>());
-        }
+        animalCells = new List<Animal>[water.width, water.height];
 
         for (int i = 0; i < animalAmount; i++)
         {
@@ -128,7 +110,7 @@ public class AnimalManager : MonoBehaviour
             Animal instanceScript = instance.GetComponent<Animal>();
             instanceScript.initialiseAnimal(position);
             animals.Add(instanceScript);
-            animalCells[position.y][position.x].Add(instanceScript);
+            animalCells[position.y, position.x].Add(instanceScript);
         }
     }
     public void updateAnimals()

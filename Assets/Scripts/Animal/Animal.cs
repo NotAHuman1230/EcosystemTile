@@ -12,6 +12,7 @@ public class Animal : MonoBehaviour
     [SerializeField] float mutationRate;
     [SerializeField] float valueMax;
     [SerializeField] float mutationMax;
+    [SerializeField] int maxSightRange;
     [SerializeField] List<Gene> genes = new List<Gene>();
 
     //Public variables
@@ -92,7 +93,10 @@ public class Animal : MonoBehaviour
     }
     public void searching() 
     {
-    
+        int range = Mathf.RoundToInt(maxSightRange * getGeneValue("Sight"));
+
+
+        
     }
     void hunting() { }
     void mating() { }
