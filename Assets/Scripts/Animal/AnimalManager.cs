@@ -129,7 +129,9 @@ public class AnimalManager : MonoBehaviour
 
         mergeSortAnimals(0, animalAmount - 1);
 
-        foreach (Animal animal in animals)
-            animal.searching();
+        Debug.Log("Updated");
+
+        //foreach (Animal animal in animals)
+            //animal.searching();
     }
 }

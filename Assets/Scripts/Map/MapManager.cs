@@ -22,10 +22,10 @@ public class MapManager : MonoBehaviour
 
     [Header("Ground Parameters")]
     [SerializeField] Color baseColour;
-    [SerializeField] Color dessertColour;
-    [SerializeField] float dessertCutOff;
-    [SerializeField] float perlinDessertIntensity;
-    [SerializeField] int perlinDessertCellSize;
+    [SerializeField] Color desertColour;
+    [SerializeField] float desertCutOff;
+    [SerializeField] float perlinDesertIntensity;
+    [SerializeField] int perlinDesertCellSize;
 
     [Header("Food Paramters")]
     [SerializeField] Vector2 foodGain;
@@ -75,7 +75,7 @@ public class MapManager : MonoBehaviour
 
         return rt;
     }
-    Texture2D generateVisuals(Texture2D _waterMap, Texture2D _dessertMap)
+    Texture2D generateVisuals(Texture2D _waterMap, Texture2D _desertMap)
     {
         RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
@@ -83,17 +83,17 @@ public class MapManager : MonoBehaviour
 
         visualCompute.SetFloats("water", waterColour.r, waterColour.g, waterColour.b);
         visualCompute.SetFloats("base", baseColour.r, baseColour.g, baseColour.b);
-        visualCompute.SetFloats("dry", dessertColour.r, dessertColour.g, dessertColour.b);
+        visualCompute.SetFloats("dry", desertColour.r, desertColour.g, desertColour.b);
 
         visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "waterTexture", _waterMap);
-        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "dessertTexture", _dessertMap);
+        visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "desertTexture", _desertMap);
         visualCompute.SetTexture(visualCompute.FindKernel("VisualGeneration"), "result", rt);
 
         visualCompute.Dispatch(visualCompute.FindKernel("VisualGeneration"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
         return renderTexTo2D(rt);
     }
-    Texture2D initialiseFood(Texture2D _waterMap, Texture2D _dessertMap)
+    Texture2D initialiseFood(Texture2D _waterMap, Texture2D _desertMap)
     {
         RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
@@ -102,7 +102,7 @@ public class MapManager : MonoBehaviour
         foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
 
         foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "water", _waterMap);
-        foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "dessert", _dessertMap);
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "desert", _desertMap);
         foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "result", rt);
         foodCompute.Dispatch(foodCompute.FindKernel("FoodInitialisation"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
@@ -113,7 +113,7 @@ public class MapManager : MonoBehaviour
     {
         //Create data maps
         waterTexture = renderTexTo2D(generatePerlinNoise(waterCutOff, perlinWaterCellSize, perlinWaterIntensity));
-        desertTexture = renderTexTo2D(generatePerlinNoise(dessertCutOff, perlinDessertCellSize, perlinDessertIntensity));
+        desertTexture = renderTexTo2D(generatePerlinNoise(desertCutOff, perlinDesertCellSize, perlinDesertIntensity));
         foodTexutre = initialiseFood(waterTexture, desertTexture);
 
         //Create visuals
@@ -129,7 +129,7 @@ public class MapManager : MonoBehaviour
         foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
 
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "water", waterTexture);
-        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "dessert", desertTexture);
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "desert", desertTexture);
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "result", rt);
 
         foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);

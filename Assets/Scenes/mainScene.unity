@@ -344,6 +344,8 @@ MonoBehaviour:
   animalPrefab: {fileID: 694099419284323498, guid: 4eef02ef17a146940ac350badb0ea5e8, type: 3}
   animalParent: {fileID: 428139584}
   animalAmount: 20
+  water: {fileID: 0}
+  desert: {fileID: 0}
 --- !u!1 &2104981726
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,14 +453,14 @@ MonoBehaviour:
   perlinWaterIntensity: 0.9
   perlinWaterCellSize: 3
   baseColour: {r: 0.045961607, g: 0.764151, b: 0, a: 1}
-  dessertColour: {r: 0.9712478, g: 1, b: 0, a: 1}
-  dessertCutOff: 1
-  perlinDessertIntensity: 1
-  perlinDessertCellSize: 2
+  desertColour: {r: 1, g: 0.9627944, b: 0, a: 1}
+  desertCutOff: 1
+  perlinDesertIntensity: 1
+  perlinDesertCellSize: 2
   foodGain: {x: 2, y: 10}
   foodRange: {x: 20, y: 100}
   waterTexture: {fileID: 0}
-  dessertTexture: {fileID: 0}
+  desertTexture: {fileID: 0}
   foodTexutre: {fileID: 0}
 --- !u!1 &2135565216
 GameObject:
