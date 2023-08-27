@@ -26,7 +26,7 @@ public class MainManager : MonoBehaviour
     IEnumerator delayedUpdate()
     {
         mapManager.updateFood();
-        animalManager.updateAnimals();
+        animalManager.updateAnimals(mapManager.foodTexutre);
 
         yield return new WaitForSeconds(updateDelay);
         StartCoroutine(delayedUpdate());

@@ -7,8 +7,11 @@ using UnityEngine;
 public enum Behaviour { dangerous, safe, mating }
 public class Animal : MonoBehaviour
 {
+    [Header("Diet")]
+    [SerializeField] float plantEnergy;
+    [SerializeField] float meatEnergy;
 
-    [Header("Parameters")]
+    [Header("Genes")]
     [SerializeField] float mutationRate;
     [SerializeField] float valueMax;
     [SerializeField] float mutationMax;
@@ -197,7 +200,13 @@ public class Animal : MonoBehaviour
         }
     }
     void huntingMeat() { }
-    void huntingPlants() { }
+    void huntingPlants() 
+    {
+        if (manager.food.GetPixel(position.x, position.y).r == 0f)
+            return;
+
+        hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
+    }
     void mating() { }
 
     private void OnDestroy()

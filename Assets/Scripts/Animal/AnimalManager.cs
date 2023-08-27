@@ -16,6 +16,7 @@ public class AnimalManager : MonoBehaviour
     List<Animal>[,] animalCells;
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
+    [HideInInspector] public Texture2D food;
 
     Vector2Int randomPosition(Texture2D _available)
     {
@@ -126,8 +127,10 @@ public class AnimalManager : MonoBehaviour
             animalCells[position.y, position.x].Add(instanceScript);
         }
     }
-    public void updateAnimals()
+    public void updateAnimals(Texture2D _food)
     {
+        food = _food;
+
         foreach (Animal animal in animals)
             animal.pickBehaviour();
 
