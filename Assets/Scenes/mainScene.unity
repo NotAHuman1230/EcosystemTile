@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3e0972c4dd29f4b8e075e2bee5c857, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 500
+  speed: 600
   scaleFactor: 25
   scaleMultiplier: 2
   scaleRange: {x: 1, y: 50}
