@@ -103,7 +103,7 @@ public class Animal : MonoBehaviour
 
         return chances;
     }
-    public Vector2Int generateDirection(float[,] _chances)
+    Vector2Int generateDirection(float[,] _chances)
     {
         float total = 0f;
         bool isNegative = false;
@@ -199,7 +199,15 @@ public class Animal : MonoBehaviour
                 break;
         }
     }
-    void huntingMeat() { }
+    void huntingMeat() 
+    {
+        if (manager.animalCells[position.y, position.x].Count == 0)
+            return;
+
+        int victimIndex = Random.Range(0, manager.animalCells[position.y, position.x].Count);
+
+
+    }
     void huntingPlants() 
     {
         if (manager.food.GetPixel(position.x, position.y).r == 0f)

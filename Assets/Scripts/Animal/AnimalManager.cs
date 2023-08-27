@@ -13,7 +13,7 @@ public class AnimalManager : MonoBehaviour
     [SerializeField] int animalAmount;
 
     List<Animal> animals = new List<Animal>();
-    List<Animal>[,] animalCells;
+    [HideInInspector] public List<Animal>[,] animalCells;
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
     [HideInInspector] public Texture2D food;
