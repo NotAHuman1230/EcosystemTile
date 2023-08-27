@@ -205,7 +205,14 @@ public class Animal : MonoBehaviour
             return;
 
         int victimIndex = Random.Range(0, manager.animalCells[position.y, position.x].Count);
+        Animal victim = manager.animalCells[position.y, position.x][victimIndex];
 
+        float huntSuccess = Random.Range(0f, getGeneValue("Offence") + victim.getGeneValue("Defence"));
+        if(huntSuccess < getGeneValue("Offence"))
+        {
+            hunger = Mathf.Clamp(hunger + meatEnergy, 0f, 100f);
+            Destroy(victim.gameObject);
+        }
 
     }
     void huntingPlants() 
@@ -215,7 +222,18 @@ public class Animal : MonoBehaviour
 
         hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
     }
-    void mating() { }
+    void mating() 
+    {
+        List<Animal> matePossibilites = new List<Animal>();
+        foreach (Animal animal in manager.animalCells[position.y, position.x])
+            if (animal.behaviour == Behaviour.mating)
+                matePossibilites.Add(animal);
+        if (matePossibilites.Count == 0)
+            return;
+
+        Animal mate = matePossibilites[Random.Range(0, matePossibilites.Count)];
+        manager.reproduction(this, mate, position);
+    }
 
     private void OnDestroy()
     {
