@@ -12,7 +12,7 @@ public class AnimalManager : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] int animalAmount;
 
-    List<Animal> animals;
+    List<Animal> animals = new List<Animal>();
     List<Animal>[,] animalCells;
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
@@ -110,7 +110,10 @@ public class AnimalManager : MonoBehaviour
         water = _water;
         desert = _desert;
 
-        animalCells = new List<Animal>[water.width, water.height];
+        animalCells = new List<Animal>[water.height, water.width];
+        for (int y = 0; y < water.height; y++)
+            for (int x = 0; x < water.width; x++)
+                animalCells[y, x] = new List<Animal>();
 
         for (int i = 0; i < animalAmount; i++)
         {
@@ -118,6 +121,7 @@ public class AnimalManager : MonoBehaviour
             GameObject instance = Instantiate(animalPrefab, animalParent);
             Animal instanceScript = instance.GetComponent<Animal>();
             instanceScript.initialiseAnimal(position);
+            instanceScript.manager = this;
             animals.Add(instanceScript);
             animalCells[position.y, position.x].Add(instanceScript);
         }

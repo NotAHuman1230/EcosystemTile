@@ -16,11 +16,11 @@ public class MainManager : MonoBehaviour
         mapManager.generateMap();
         animalManager.generateAnimals(mapManager.waterTexture, mapManager.desertTexture);
 
-        StartCoroutine(delayedUpdate());
+        //StartCoroutine(delayedUpdate());
     }
     private void Update()
     {
-
+        
     }
 
     IEnumerator delayedUpdate()

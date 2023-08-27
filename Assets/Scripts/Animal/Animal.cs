@@ -107,7 +107,7 @@ public class Animal : MonoBehaviour
         position = _position;
         hunger = 50f;
 
-        foreach(Gene gene in genes)
+        foreach (Gene gene in genes)
             gene.value = Random.Range(0f, valueMax);
     }
     public void born(Animal _father, Animal _mother, Vector2 _position)
