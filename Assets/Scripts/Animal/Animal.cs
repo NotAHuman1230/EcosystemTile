@@ -100,7 +100,39 @@ public class Animal : MonoBehaviour
 
         return chances;
     }
-    
+    public Vector2Int generateDirection(float[,] _chances)
+    {
+        float total = 0f;
+        bool isNegative = false;
+        for (int y = 0; y < _chances.GetLength(0); y++)
+            for (int x = 0; x < _chances.GetLength(1); x++)
+            {
+                total += _chances[y, x];
+                if (_chances[y, x] < 0)
+                    isNegative = true;
+            }
+
+        for (int y = 0; y < _chances.GetLength(0); y++)
+            for (int x = 0; x < _chances.GetLength(1); x++)
+            {
+                if(isNegative)
+                    _chances[y, x] = -_chances[y, x];
+                else if(_chances[y, x] < 0)
+                    _chances[y, x] = 0;
+            }
+
+        float chance = Random.Range(0f, total);
+        for (int y = 0; y < _chances.GetLength(0); y++)
+            for (int x = 0; x < _chances.GetLength(1); x++)
+            {
+                chance -= _chances[y, x];
+                if (chance <= 0f)
+                    return new Vector2Int(y, x) - new Vector2Int(1, 1);
+            }
+
+        Debug.LogError("Choosing direction has led to uncertainty!!!");
+        return new Vector2Int(0, 0);
+    }
 
     public void initialiseAnimal(Vector2Int _position)
     {
@@ -145,10 +177,8 @@ public class Animal : MonoBehaviour
         int range = Mathf.RoundToInt(maxSightRange * getGeneValue("Sight"));
         float[,] chances = generateCellChances(manager.getSurroundings(position, range), range);
 
-        for (int y = 0; y < chances.GetLength(0); y++)
-            for (int x = 0; x < chances.GetLength(1); x++)
-                Debug.Log(chances[y, x]);
-
+        Vector2Int direction = generateDirection(chances);
+        position += direction;
     }
     void hunting() { }
     void mating() { }
