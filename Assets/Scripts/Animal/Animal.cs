@@ -179,8 +179,25 @@ public class Animal : MonoBehaviour
 
         Vector2Int direction = generateDirection(chances);
         position += direction;
+
+        switch (behaviour)
+        {
+            case Behaviour.dangerous:
+                huntingMeat();
+                break;
+            case Behaviour.safe:
+                huntingPlants();
+                break;
+            case Behaviour.mating:
+                mating();
+                break;
+            default:
+                Debug.LogError("Behaviour not found!");
+                break;
+        }
     }
-    void hunting() { }
+    void huntingMeat() { }
+    void huntingPlants() { }
     void mating() { }
 
     private void OnDestroy()
