@@ -145,6 +145,10 @@ public class Animal : MonoBehaviour
         int range = Mathf.RoundToInt(maxSightRange * getGeneValue("Sight"));
         float[,] chances = generateCellChances(manager.getSurroundings(position, range), range);
 
+        for (int y = 0; y < chances.GetLength(0); y++)
+            for (int x = 0; x < chances.GetLength(1); x++)
+                Debug.Log(chances[y, x]);
+
     }
     void hunting() { }
     void mating() { }

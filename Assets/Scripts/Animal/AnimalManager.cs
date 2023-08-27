@@ -83,7 +83,7 @@ public class AnimalManager : MonoBehaviour
 
                 for (int i = 0; i < animalCells[_position.y + y, _position.x + x].Count; i++)
                 {
-                    if(surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(0f, 1f) >= surroundings[y, x][i].getGeneValue("Stealth"))
+                    if(surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(0f, 1.5f) >= surroundings[y, x][i].getGeneValue("Stealth") && surroundings[y, x][i].behaviour == Behaviour.dangerous)
                         surroundings[y, x].Add(animalCells[_position.y + y, _position.x + x][i]);
                 }
             }
@@ -135,7 +135,7 @@ public class AnimalManager : MonoBehaviour
 
         Debug.Log("Updated");
 
-        //foreach (Animal animal in animals)
-            //animal.searching();
+        foreach (Animal animal in animals)
+            animal.searching();
     }
 }

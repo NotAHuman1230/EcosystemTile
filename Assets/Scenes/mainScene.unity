@@ -508,7 +508,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapManager: {fileID: 2104981730}
   animalManager: {fileID: 1893737699}
-  updateDelay: 1
+  updateDelay: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
