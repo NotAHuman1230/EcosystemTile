@@ -55,6 +55,17 @@ public class AnimalManager : MonoBehaviour
         
         while(arrOneAmount > i && arrTwoAmount > j)
         {
+            if (_mid + j + 1 >= animals.Count)
+            {
+                Debug.Log("Start: " + _start);
+                Debug.Log("End: " + _end);
+                Debug.Log("Mid: " + _mid);
+                Debug.Log("Value: " + (_mid + j + 1));
+                Debug.Log("Count: " + animals.Count);
+                Debug.Log("Total 1: " + arrOneAmount);
+                Debug.Log("Total 2: " + arrTwoAmount);
+            }
+
             if (animals[_start + i].getGeneValue("Agility") > animals[_mid + j + 1].getGeneValue("Agility"))
             {
                 list.Add(animals[_start + i]);
@@ -134,7 +145,8 @@ public class AnimalManager : MonoBehaviour
         foreach (Animal animal in animals)
             animal.pickBehaviour();
 
-        mergeSortAnimals(0, animalAmount - 1);
+        if(animals.Count > 1)
+            mergeSortAnimals(0, animals.Count - 1);
 
         Debug.Log("Updated");
 

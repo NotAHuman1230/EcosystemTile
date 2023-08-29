@@ -346,6 +346,7 @@ MonoBehaviour:
   animalAmount: 20
   water: {fileID: 0}
   desert: {fileID: 0}
+  food: {fileID: 0}
 --- !u!1 &2104981726
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,7 +509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapManager: {fileID: 2104981730}
   animalManager: {fileID: 1893737699}
-  updateDelay: 10
+  updateDelay: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
