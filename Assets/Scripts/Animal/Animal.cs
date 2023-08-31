@@ -53,9 +53,16 @@ public class Animal : MonoBehaviour
     {
         float[,] chances = {{0, 0, 0 }, {0, 0, 0 }, {0, 0, 0 }};
         
-        for (int y = 0; y < _surroundings.GetLength(0); y++)
-            for (int x = 0; x < _surroundings.GetLength(1); x++)
+        for (int y = 0; y < 3; y++)
+            for (int x = 0; x < 3; x++)
             {
+                Vector2Int pos = position + (new Vector2Int(x, y) - new Vector2Int(1, 1));
+                if (pos.x < 0 || pos.x >= manager.water.width || pos.y < 0 || pos.y >= manager.water.height)
+                {
+                    chances[y, x] = Mathf.Infinity;
+                    continue;
+                }
+
                 float effect = 0f;
 
                 for (int i = 0; i < _surroundings[y, x].Count; i++)
@@ -78,14 +85,13 @@ public class Animal : MonoBehaviour
     Vector2Int generateDirection(float[,] _chances)
     {
         float smallest = Mathf.Infinity;
-        float biggest = -Mathf.Infinity;
         bool isNegative = true;
         for (int y = 0; y < _chances.GetLength(0); y++)
             for (int x = 0; x < _chances.GetLength(1); x++)
             {
-                if(biggest < _chances[y, x])
-                    biggest = _chances[y, x];
-                else if (smallest > _chances[y, x])
+                if (_chances[y, x] == Mathf.Infinity) continue;
+
+                if (smallest > _chances[y, x])
                     smallest = _chances[y, x];
 
                 if (_chances[y, x] >= 0)
@@ -96,10 +102,14 @@ public class Animal : MonoBehaviour
         for (int y = 0; y < _chances.GetLength(0); y++)
             for (int x = 0; x < _chances.GetLength(1); x++)
             {
+                if (_chances[y, x] == Mathf.Infinity) continue;
+
                 if (isNegative)
-                    _chances[y, x] = -biggest + _chances[y, x];
+                    _chances[y, x] = -smallest + _chances[y, x];
                 else
                     _chances[y, x] = _chances[y, x] - smallest;
+
+                total += _chances[y, x];
             }
 
         
@@ -108,9 +118,11 @@ public class Animal : MonoBehaviour
         for (int y = 0; y < _chances.GetLength(0); y++)
             for (int x = 0; x < _chances.GetLength(1); x++)
             {
+                if (_chances[y, x] == Mathf.Infinity) continue;
+
                 chance -= _chances[y, x];
                 if (chance <= 0f)
-                    return new Vector2Int(y, x) - new Vector2Int(1, 1);
+                    return new Vector2Int(x, y) - new Vector2Int(1, 1);
             }
 
         Debug.LogError("Choosing direction has led to uncertainty!!!");
@@ -159,9 +171,10 @@ public class Animal : MonoBehaviour
     public void searching() 
     {
         float[,] chances = generateCellChances(manager.getSurroundings(position));
-
         Vector2Int direction = generateDirection(chances);
         position += direction;
+
+        return;
 
         switch (behaviour)
         {

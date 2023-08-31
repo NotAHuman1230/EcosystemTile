@@ -79,17 +79,18 @@ public class AnimalManager : MonoBehaviour
         for (int y = -1; y < 2; y++)
             for (int x = -1; x < 2; x++)
             {
-                if (y + _position.y >= water.height || x + _position.x >= water.width)
-                    continue;
-                else if(y + _position.y < 0 || x + _position.x < 0)
-                    continue;
+                Vector2Int pos = new Vector2Int(_position.x + x, _position.y + y);
+                Vector2Int gridPos = new Vector2Int(x, y) + new Vector2Int(1, 1);
 
-                surroundings[y + 1, x + 1] = new List<Animal>();
-                for (int i = 0; i < animalCells[_position.y + y, _position.x + x].Count; i++)
+                if (pos.y >= animalCells.GetLength(0) || pos.x >= animalCells.GetLength(1)) continue;
+                else if(pos.y < 0 || pos.x < 0) continue;
+
+                surroundings[gridPos.y, gridPos.x] = new List<Animal>();
+                for (int i = 0; i < animalCells[pos.y, pos.x].Count; i++)
                 {
-                    Gene stealth = surroundings[y, x][i].getGene("Stealth");
-                    if (surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(stealth.boundryRange.x, stealth.boundryRange.y * 1.25f) >= stealth.value && surroundings[y, x][i].behaviour == Behaviour.dangerous)
-                        surroundings[y, x].Add(animalCells[_position.y + y, _position.x + x][i]);
+                    Gene stealth = animalCells[pos.y, pos.x][i].getGene("Stealth");
+                    if (animalCells[pos.y, pos.x][i].behaviour != Behaviour.dangerous || Random.Range(stealth.boundryRange.x, stealth.boundryRange.y * 1.25f) >= stealth.value)
+                        surroundings[gridPos.y, gridPos.x].Add(animalCells[pos.y, pos.x][i]);
                 }
             }
 
@@ -143,11 +144,6 @@ public class AnimalManager : MonoBehaviour
         if(animals.Count > 1)
             mergeSortAnimals(0, animals.Count - 1);
 
-        //Todo bug in animal behaviour methods
-        //Index out of range
-        //Out of map range when finding chances
-        //Negatives chances are wrong way round
-        //Do complete redo of chances where rather than normal distance, use cell distance
         foreach (Animal animal in animals)
             animal.searching();
     }
