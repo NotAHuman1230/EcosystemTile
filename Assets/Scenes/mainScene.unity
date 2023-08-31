@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalPrefab: {fileID: 694099419284323498, guid: 4eef02ef17a146940ac350badb0ea5e8, type: 3}
   animalParent: {fileID: 428139584}
-  animalAmount: 20
+  animalAmount: 1000
   water: {fileID: 0}
   desert: {fileID: 0}
   food: {fileID: 0}

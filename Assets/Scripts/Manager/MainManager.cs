@@ -16,19 +16,26 @@ public class MainManager : MonoBehaviour
         mapManager.generateMap();
         animalManager.generateAnimals(mapManager.waterTexture, mapManager.desertTexture);
 
-        StartCoroutine(delayedUpdate());
+        //StartCoroutine(delay());
     }
     private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+            delayedUpdate();
     }
 
-    IEnumerator delayedUpdate()
+    void delayedUpdate()
+    {
+        mapManager.updateFood();
+        animalManager.updateAnimals(mapManager.foodTexutre);
+    }
+
+    IEnumerator delay()
     {
         mapManager.updateFood();
         animalManager.updateAnimals(mapManager.foodTexutre);
 
         yield return new WaitForSeconds(updateDelay);
-        StartCoroutine(delayedUpdate());
+        StartCoroutine(delay());
     }
 }

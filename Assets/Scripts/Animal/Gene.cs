@@ -7,6 +7,8 @@ class Gene
 {
     public string name;
     public float energyCost;
+    public float mutationRange;
+    public Vector2 boundryRange;
 
     [HideInInspector] public float value;
 }

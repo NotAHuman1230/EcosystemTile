@@ -44,15 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b0c520ad8494a9d088129e801760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plantEnergy: 0
+  meatEnergy: 0
   mutationRate: 0.05
   valueMax: 1
   mutationMax: 0.1
   maxSightRange: 0
   genes:
   - name: Agility
-    energyCost: 10
-    value: 0
-  - name: Sight
     energyCost: 10
     value: 0
   - name: Stealth

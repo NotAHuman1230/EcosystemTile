@@ -13,9 +13,6 @@ public class Animal : MonoBehaviour
 
     [Header("Genes")]
     [SerializeField] float mutationRate;
-    [SerializeField] float valueMax;
-    [SerializeField] float mutationMax;
-    [SerializeField] int maxSightRange;
     [SerializeField] List<Gene> genes = new List<Gene>();
 
     //Public variables
@@ -37,7 +34,8 @@ public class Animal : MonoBehaviour
     void mutate()
     {
         int index = Random.Range(0, genes.Count);
-        genes[index].value += Random.Range(-mutationMax, mutationMax);
+        genes[index].value += Random.Range(-genes[index].mutationRange, genes[index].mutationRange);
+        genes[index].value = Mathf.Clamp(genes[index].value, genes[index].boundryRange.x, genes[index].boundryRange.y);
     }
 
     public float getGeneValue(string _name)
@@ -51,29 +49,10 @@ public class Animal : MonoBehaviour
         Debug.LogError("Gene value not found!");
         return 0f;
     }
-    Vector2Int findClosestCell(Vector2Int _position, int _range)
-    {
-        int middle = ((_range - 3) / 2) + 1;
-        float closestDistance = Mathf.Infinity;
-        Vector2Int closestVector = Vector2Int.zero;
-
-        for (int y = 0; y < _range; y++)
-            for (int x = 0; x < _range; x++)
-            {
-                float distance = Vector2Int.Distance(_position, new Vector2Int(x + middle, y + middle));
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestVector = new Vector2Int(x, y);
-                }
-            }
-
-        return closestVector;
-    }
-    public float[,] generateCellChances(List<Animal>[,] _surroundings, int _range)
+    public float[,] generateCellChances(List<Animal>[,] _surroundings)
     {
         float[,] chances = {{0, 0, 0 }, {0, 0, 0 }, {0, 0, 0 }};
-
+        
         for (int y = 0; y < _surroundings.GetLength(0); y++)
             for (int x = 0; x < _surroundings.GetLength(1); x++)
             {
@@ -91,38 +70,39 @@ public class Animal : MonoBehaviour
                         effect += getGeneValue("DesireBenefit");
                 }
 
-                Vector2Int pos = new Vector2Int(x, y);
-                Vector2Int closestCell = findClosestCell(pos, _range);
-                float distance = Vector2Int.Distance(pos, closestCell);
-                int furthestPoint = (_range - 3) / 2;
-                float deteriation = distance / Vector2Int.Distance(new Vector2Int(0, 0), new Vector2Int(furthestPoint, furthestPoint));
-                effect *= (1f - deteriation);
-
-                chances[closestCell.y, closestCell.x] += effect;
+                chances[y, x] = effect;
             }
 
         return chances;
     }
     Vector2Int generateDirection(float[,] _chances)
     {
-        float total = 0f;
-        bool isNegative = false;
+        float smallest = Mathf.Infinity;
+        float biggest = -Mathf.Infinity;
+        bool isNegative = true;
         for (int y = 0; y < _chances.GetLength(0); y++)
             for (int x = 0; x < _chances.GetLength(1); x++)
             {
-                total += _chances[y, x];
-                if (_chances[y, x] < 0)
-                    isNegative = true;
+                if(biggest < _chances[y, x])
+                    biggest = _chances[y, x];
+                else if (smallest > _chances[y, x])
+                    smallest = _chances[y, x];
+
+                if (_chances[y, x] >= 0)
+                    isNegative = false;
             }
 
+        float total = 0f;
         for (int y = 0; y < _chances.GetLength(0); y++)
             for (int x = 0; x < _chances.GetLength(1); x++)
             {
-                if(isNegative)
-                    _chances[y, x] = -_chances[y, x];
-                else if(_chances[y, x] < 0)
-                    _chances[y, x] = 0;
+                if (isNegative)
+                    _chances[y, x] = -biggest + _chances[y, x];
+                else
+                    _chances[y, x] = _chances[y, x] - smallest;
             }
+
+        
 
         float chance = Random.Range(0f, total);
         for (int y = 0; y < _chances.GetLength(0); y++)
@@ -143,7 +123,7 @@ public class Animal : MonoBehaviour
         hunger = 50f;
 
         foreach (Gene gene in genes)
-            gene.value = Random.Range(0f, valueMax);
+            gene.value = Random.Range(gene.boundryRange.x, gene.boundryRange.y);
     }
     public void born(Animal _father, Animal _mother, Vector2 _position)
     {
@@ -177,8 +157,7 @@ public class Animal : MonoBehaviour
     }
     public void searching() 
     {
-        int range = Mathf.RoundToInt(maxSightRange * getGeneValue("Sight"));
-        float[,] chances = generateCellChances(manager.getSurroundings(position, range), range);
+        float[,] chances = generateCellChances(manager.getSurroundings(position));
 
         Vector2Int direction = generateDirection(chances);
         position += direction;

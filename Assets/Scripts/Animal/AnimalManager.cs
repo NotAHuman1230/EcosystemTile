@@ -55,17 +55,6 @@ public class AnimalManager : MonoBehaviour
         
         while(arrOneAmount > i && arrTwoAmount > j)
         {
-            if (_mid + j + 1 >= animals.Count)
-            {
-                Debug.Log("Start: " + _start);
-                Debug.Log("End: " + _end);
-                Debug.Log("Mid: " + _mid);
-                Debug.Log("Value: " + (_mid + j + 1));
-                Debug.Log("Count: " + animals.Count);
-                Debug.Log("Total 1: " + arrOneAmount);
-                Debug.Log("Total 2: " + arrTwoAmount);
-            }
-
             if (animals[_start + i].getGeneValue("Agility") > animals[_mid + j + 1].getGeneValue("Agility"))
             {
                 list.Add(animals[_start + i]);
@@ -84,15 +73,18 @@ public class AnimalManager : MonoBehaviour
         for (int k = 0; k < list.Count; k++) { animals[_start + k] = list[k]; }
     }
 
-    public List<Animal>[,] getSurroundings(Vector2Int _position, int _range)
+    public List<Animal>[,] getSurroundings(Vector2Int _position)
     {
-        List<Animal>[,] surroundings = new List<Animal>[_range, _range];
-        for (int y = 0; y < _range; y++)
-            for (int x = 0; x < _range; x++)
+        List<Animal>[,] surroundings = new List<Animal>[3, 3];
+        for (int y = -1; y < 2; y++)
+            for (int x = -1; x < 2; x++)
             {
                 if (y + _position.y >= water.height || x + _position.x >= water.width)
                     continue;
+                else if(y + _position.y < 0 || x + _position.x < 0)
+                    continue;
 
+                surroundings[y + 1, x + 1] = new List<Animal>();
                 for (int i = 0; i < animalCells[_position.y + y, _position.x + x].Count; i++)
                 {
                     if(surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(0f, 1.5f) >= surroundings[y, x][i].getGeneValue("Stealth") && surroundings[y, x][i].behaviour == Behaviour.dangerous)
@@ -140,6 +132,8 @@ public class AnimalManager : MonoBehaviour
     }
     public void updateAnimals(Texture2D _food)
     {
+        Debug.Log("Population: " + animals.Count);
+
         food = _food;
 
         foreach (Animal animal in animals)
@@ -148,8 +142,11 @@ public class AnimalManager : MonoBehaviour
         if(animals.Count > 1)
             mergeSortAnimals(0, animals.Count - 1);
 
-        Debug.Log("Updated");
-
+        //Todo bug in animal behaviour methods
+        //Index out of range
+        //Out of map range when finding chances
+        //Negatives chances are wrong way round
+        //Do complete redo of chances where rather than normal distance, use cell distance
         foreach (Animal animal in animals)
             animal.searching();
     }
