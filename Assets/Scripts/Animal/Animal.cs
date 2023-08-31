@@ -38,16 +38,16 @@ public class Animal : MonoBehaviour
         genes[index].value = Mathf.Clamp(genes[index].value, genes[index].boundryRange.x, genes[index].boundryRange.y);
     }
 
-    public float getGeneValue(string _name)
+    public Gene getGene(string _name)
     {
         foreach(Gene gene in genes)
         {
             if (gene.name == _name)
-                return gene.value;
+                return gene;
         }
 
         Debug.LogError("Gene value not found!");
-        return 0f;
+        return genes[0];
     }
     public float[,] generateCellChances(List<Animal>[,] _surroundings)
     {
@@ -61,13 +61,13 @@ public class Animal : MonoBehaviour
                 for (int i = 0; i < _surroundings[y, x].Count; i++)
                 {
                     if (_surroundings[y, x][i].behaviour == Behaviour.dangerous)
-                        effect -= getGeneValue("PredatorAversion");
+                        effect -= getGene("PredatorAversion").value;
                     else if (_surroundings[y, x][i].behaviour == Behaviour.safe && behaviour == Behaviour.safe)
-                        effect -= getGeneValue("CrowdAversion");
+                        effect -= getGene("CrowdAversion").value;
                     else if (_surroundings[y, x][i].behaviour == Behaviour.mating && behaviour == Behaviour.mating)
-                        effect += getGeneValue("DesireBenefit");
+                        effect += getGene("DesireBenefit").value;
                     else if(_surroundings[y, x][i].behaviour == Behaviour.safe && behaviour == Behaviour.dangerous)
-                        effect += getGeneValue("DesireBenefit");
+                        effect += getGene("DesireBenefit").value;
                 }
 
                 chances[y, x] = effect;
@@ -144,12 +144,13 @@ public class Animal : MonoBehaviour
         if (hunger <= 0f)
             Destroy(gameObject);
 
-        if (hunger >= getGeneValue("MatingDesire") * 100f)
+        if (hunger >= getGene("MatingDesire").value * (100f / getGene("MatingDesire").boundryRange.y))
             behaviour = Behaviour.mating;
         else
         {
-            float foodType = Random.Range(0f, 1f);
-            if (foodType < getGeneValue("Carnivory"))
+            Gene carnivory = getGene("Carnivory");
+            float foodType = Random.Range(carnivory.boundryRange.x, carnivory.boundryRange.y);
+            if (foodType < carnivory.value)
                 behaviour = Behaviour.dangerous;
             else
                 behaviour = Behaviour.safe;
@@ -186,8 +187,8 @@ public class Animal : MonoBehaviour
         int victimIndex = Random.Range(0, manager.animalCells[position.y, position.x].Count);
         Animal victim = manager.animalCells[position.y, position.x][victimIndex];
 
-        float huntSuccess = Random.Range(0f, getGeneValue("Offence") + victim.getGeneValue("Defence"));
-        if(huntSuccess < getGeneValue("Offence"))
+        float huntSuccess = Random.Range(0f, getGene("Offence").value + victim.getGene("Defence").value);
+        if(huntSuccess < getGene("Offence").value)
         {
             hunger = Mathf.Clamp(hunger + meatEnergy, 0f, 100f);
             Destroy(victim.gameObject);

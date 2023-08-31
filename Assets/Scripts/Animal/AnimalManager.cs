@@ -55,7 +55,7 @@ public class AnimalManager : MonoBehaviour
         
         while(arrOneAmount > i && arrTwoAmount > j)
         {
-            if (animals[_start + i].getGeneValue("Agility") > animals[_mid + j + 1].getGeneValue("Agility"))
+            if (animals[_start + i].getGene("Agility").value > animals[_mid + j + 1].getGene("Agility").value)
             {
                 list.Add(animals[_start + i]);
                 i++;
@@ -87,7 +87,8 @@ public class AnimalManager : MonoBehaviour
                 surroundings[y + 1, x + 1] = new List<Animal>();
                 for (int i = 0; i < animalCells[_position.y + y, _position.x + x].Count; i++)
                 {
-                    if(surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(0f, 1.5f) >= surroundings[y, x][i].getGeneValue("Stealth") && surroundings[y, x][i].behaviour == Behaviour.dangerous)
+                    Gene stealth = surroundings[y, x][i].getGene("Stealth");
+                    if (surroundings[y, x][i].behaviour != Behaviour.dangerous || Random.Range(stealth.boundryRange.x, stealth.boundryRange.y * 1.25f) >= stealth.value && surroundings[y, x][i].behaviour == Behaviour.dangerous)
                         surroundings[y, x].Add(animalCells[_position.y + y, _position.x + x][i]);
                 }
             }

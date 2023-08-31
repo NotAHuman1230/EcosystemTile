@@ -44,42 +44,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b0c520ad8494a9d088129e801760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantEnergy: 0
-  meatEnergy: 0
+  plantEnergy: 10
+  meatEnergy: 50
   mutationRate: 0.05
-  valueMax: 1
-  mutationMax: 0.1
-  maxSightRange: 0
   genes:
   - name: Agility
-    energyCost: 10
+    energyCost: 1
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: Stealth
-    energyCost: 0.1
+    energyCost: 1
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: Carnivory
-    energyCost: 0
+    energyCost: 1
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: Offence
-    energyCost: 10
+    energyCost: 1
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: Defence
-    energyCost: 10
+    energyCost: 1
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: MatingDesire
-    energyCost: 10
+    energyCost: 0
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: DesireBenefit
-    energyCost: 10
+    energyCost: 0
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: PredatorAversion
-    energyCost: 10
+    energyCost: 0
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: CrowdAversion
-    energyCost: 10
+    energyCost: 0
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   - name: TemperatureResistance
-    energyCost: 10
+    energyCost: 1
+    mutationRange: 0.1
+    boundryRange: {x: 0, y: 1}
     value: 0
   manager: {fileID: 0}
   behaviour: 0
