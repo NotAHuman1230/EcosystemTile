@@ -16,12 +16,12 @@ public class MainManager : MonoBehaviour
         mapManager.generateMap();
         animalManager.generateAnimals(mapManager.waterTexture, mapManager.desertTexture);
 
-        //StartCoroutine(delay());
+        StartCoroutine(delay());
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            delayedUpdate();
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //    delayedUpdate();
     }
 
     void delayedUpdate()

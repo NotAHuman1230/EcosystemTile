@@ -14,7 +14,10 @@ public class AnimalManager : MonoBehaviour
 
     List<Animal> animals = new List<Animal>();
     [HideInInspector] public List<Animal>[,] animalCells;
+
     [HideInInspector] public List<Animal> graveyard = new List<Animal>();
+    List<Animal> newBorns = new List<Animal>();
+
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
     [HideInInspector] public Texture2D food;
@@ -44,6 +47,16 @@ public class AnimalManager : MonoBehaviour
         }
 
         graveyard.Clear();
+    }
+    void generateBirths()
+    {
+        foreach(Animal newBorn in newBorns)
+        {
+            animals.Add(newBorn);
+            animalCells[newBorn.position.y, newBorn.position.x].Add(newBorn);
+        }
+
+        newBorns.Clear();
     }
 
     void mergeSortAnimals(int _start, int _end)
@@ -114,9 +127,9 @@ public class AnimalManager : MonoBehaviour
     {
         GameObject instance = Instantiate(animalPrefab, animalParent);
         Animal instanceScript = instance.GetComponent<Animal>();
+        instanceScript.manager = this;
         instanceScript.born(_father, _mother, _position);
-        animals.Add(instanceScript);
-        animalCells[_position.y, _position.x].Add(instanceScript);
+        newBorns.Add(instanceScript);
     }
 
     public void generateAnimals(Texture2D _water, Texture2D _desert)
@@ -157,5 +170,6 @@ public class AnimalManager : MonoBehaviour
                 animal.searching();
 
         destroyDead();
+        generateBirths();
     }
 }

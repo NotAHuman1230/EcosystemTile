@@ -139,8 +139,10 @@ public class Animal : MonoBehaviour
         foreach (Gene gene in genes)
             gene.value = Random.Range(gene.boundryRange.x, gene.boundryRange.y);
     }
-    public void born(Animal _father, Animal _mother, Vector2 _position)
+    public void born(Animal _father, Animal _mother, Vector2Int _position)
     {
+        position = _position;
+
         for (int i = 0; i < genes.Count; i++)
         {
             float geneAttribution = Random.Range(0f, 1f);
@@ -192,12 +194,12 @@ public class Animal : MonoBehaviour
             case Behaviour.safe:
                 huntingPlants();
                 break;
-                //case Behaviour.mating:
-                //    mating();
-                //    break;
-                //default:
-                //    Debug.LogError("Behaviour not found!");
-                //    break;
+            case Behaviour.mating:
+                mating();
+                break;
+            default:
+                Debug.LogError("Behaviour not found!");
+                break;
         }
     }
     void huntingMeat() 
