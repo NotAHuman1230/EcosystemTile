@@ -8,6 +8,7 @@ public enum Behaviour { dangerous, safe, mating }
 public class Animal : MonoBehaviour
 {
     [Header("Diet")]
+    [SerializeField] [Range(0f, 1f)] float plantDepletion;
     [SerializeField] float plantEnergy;
     [SerializeField] float meatEnergy;
 
@@ -20,8 +21,9 @@ public class Animal : MonoBehaviour
     [HideInInspector] public Behaviour behaviour;
 
     //Base
-    Vector2Int position;
-    float hunger;
+    [HideInInspector] public Vector2Int position;
+    [HideInInspector] public bool isDead;
+    float hunger = 0f;
 
     float calulatedHungerUsage()
     {
@@ -148,13 +150,18 @@ public class Animal : MonoBehaviour
         float mutationChance = Random.Range(0f, 1f);
         if(mutationChance < mutationRate) mutate();
     }
+    public void death()
+    {
+        manager.graveyard.Add(this);
+        isDead = true;
+    }
 
     //State control
     public void pickBehaviour()
     {
         hunger -= calulatedHungerUsage();
         if (hunger <= 0f)
-            Destroy(gameObject);
+            death();
 
         if (hunger >= getGene("MatingDesire").value * (100f / getGene("MatingDesire").boundryRange.y))
             behaviour = Behaviour.mating;
@@ -172,9 +179,10 @@ public class Animal : MonoBehaviour
     {
         float[,] chances = generateCellChances(manager.getSurroundings(position));
         Vector2Int direction = generateDirection(chances);
-        position += direction;
 
-        return;
+        manager.animalCells[position.y, position.x].Remove(this);
+        position += direction;
+        manager.animalCells[position.y, position.x].Add(this);
 
         switch (behaviour)
         {
@@ -184,12 +192,12 @@ public class Animal : MonoBehaviour
             case Behaviour.safe:
                 huntingPlants();
                 break;
-            case Behaviour.mating:
-                mating();
-                break;
-            default:
-                Debug.LogError("Behaviour not found!");
-                break;
+                //case Behaviour.mating:
+                //    mating();
+                //    break;
+                //default:
+                //    Debug.LogError("Behaviour not found!");
+                //    break;
         }
     }
     void huntingMeat() 
@@ -204,16 +212,22 @@ public class Animal : MonoBehaviour
         if(huntSuccess < getGene("Offence").value)
         {
             hunger = Mathf.Clamp(hunger + meatEnergy, 0f, 100f);
-            Destroy(victim.gameObject);
+            victim.death();
         }
 
     }
     void huntingPlants() 
     {
-        if (manager.food.GetPixel(position.x, position.y).r == 0f)
+        Color pixel = manager.food.GetPixel(position.x, position.y);
+        if (pixel.r == 0f)
             return;
 
         hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
+
+        float newValue = Mathf.Clamp(pixel.r - plantDepletion, 0f, 1f);
+        pixel = new Color(newValue, newValue, newValue, 1f); 
+        manager.food.SetPixel(position.x, position.y, pixel);
+
     }
     void mating() 
     {
@@ -226,10 +240,5 @@ public class Animal : MonoBehaviour
 
         Animal mate = matePossibilites[Random.Range(0, matePossibilites.Count)];
         manager.reproduction(this, mate, position);
-    }
-
-    private void OnDestroy()
-    {
-        manager.death(this, position);
     }
 }

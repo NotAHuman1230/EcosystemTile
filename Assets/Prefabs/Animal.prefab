@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b0c520ad8494a9d088129e801760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plantDepletion: 0.1
   plantEnergy: 10
   meatEnergy: 50
   mutationRate: 0.05
@@ -59,7 +60,7 @@ MonoBehaviour:
     boundryRange: {x: 0, y: 1}
     value: 0
   - name: Carnivory
-    energyCost: 1
+    energyCost: 0
     mutationRange: 0.1
     boundryRange: {x: 0, y: 1}
     value: 0
@@ -100,3 +101,5 @@ MonoBehaviour:
     value: 0
   manager: {fileID: 0}
   behaviour: 0
+  position: {x: 0, y: 0}
+  isDead: 0

@@ -14,6 +14,7 @@ public class AnimalManager : MonoBehaviour
 
     List<Animal> animals = new List<Animal>();
     [HideInInspector] public List<Animal>[,] animalCells;
+    [HideInInspector] public List<Animal> graveyard = new List<Animal>();
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
     [HideInInspector] public Texture2D food;
@@ -31,6 +32,18 @@ public class AnimalManager : MonoBehaviour
         }
 
         return position;
+    }
+
+    void destroyDead()
+    {
+        for(int i = 0; i < graveyard.Count; i++)
+        {
+            animals.Remove(graveyard[i]);
+            animalCells[graveyard[i].position.y, graveyard[i].position.x].Remove(graveyard[i]);
+            Destroy(graveyard[i].gameObject);
+        }
+
+        graveyard.Clear();
     }
 
     void mergeSortAnimals(int _start, int _end)
@@ -105,11 +118,6 @@ public class AnimalManager : MonoBehaviour
         animals.Add(instanceScript);
         animalCells[_position.y, _position.x].Add(instanceScript);
     }
-    public void death(Animal _self, Vector2Int _positon)
-    {
-        animals.Remove(_self);
-        animalCells[_positon.y, _positon.x].Remove(_self);
-    }
 
     public void generateAnimals(Texture2D _water, Texture2D _desert)
     {
@@ -145,6 +153,9 @@ public class AnimalManager : MonoBehaviour
             mergeSortAnimals(0, animals.Count - 1);
 
         foreach (Animal animal in animals)
-            animal.searching();
+            if (!animal.isDead)
+                animal.searching();
+
+        destroyDead();
     }
 }
