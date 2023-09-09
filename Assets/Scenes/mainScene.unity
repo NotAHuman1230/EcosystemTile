@@ -459,8 +459,8 @@ MonoBehaviour:
   desertCutOff: 1
   perlinDesertIntensity: 1
   perlinDesertCellSize: 2
-  foodGain: {x: 2, y: 10}
-  foodRange: {x: 20, y: 100}
+  foodGain: {x: 0.02, y: 0.1}
+  foodRange: {x: 0.55, y: 1}
   waterTexture: {fileID: 0}
   desertTexture: {fileID: 0}
   foodTexutre: {fileID: 0}

@@ -35,14 +35,6 @@ public class MapManager : MonoBehaviour
     [HideInInspector] public Texture2D desertTexture;
     [HideInInspector] public Texture2D foodTexutre;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-            generateMap();
-        else if (Input.GetKeyDown(KeyCode.Space))
-            updateFood();
-    }
-
     RenderTexture createRenderTexture(int _width, int _height)
     {
         RenderTexture rt = new RenderTexture(_width, _height, 0);
@@ -98,8 +90,8 @@ public class MapManager : MonoBehaviour
         RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
         foodCompute.SetInts("resolution", gridSize.x, gridSize.y);
-        foodCompute.SetFloat("seed", Random.Range(0f, 10f));
-        foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
+        foodCompute.SetFloat("seed", Random.Range(0f, 100f));
+        foodCompute.SetFloats("foodRange", foodRange.x, foodRange.y);
 
         foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "water", _waterMap);
         foodCompute.SetTexture(foodCompute.FindKernel("FoodInitialisation"), "desert", _desertMap);
@@ -115,6 +107,7 @@ public class MapManager : MonoBehaviour
         waterTexture = renderTexTo2D(generatePerlinNoise(waterCutOff, perlinWaterCellSize, perlinWaterIntensity));
         desertTexture = renderTexTo2D(generatePerlinNoise(desertCutOff, perlinDesertCellSize, perlinDesertIntensity));
         foodTexutre = initialiseFood(waterTexture, desertTexture);
+        Debug.Log(foodTexutre.GetPixel(25, 25).r);
 
         //Create visuals
         Sprite sprite = Sprite.Create(generateVisuals(waterTexture, desertTexture), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
@@ -125,16 +118,20 @@ public class MapManager : MonoBehaviour
         RenderTexture rt = createRenderTexture(gridSize.x, gridSize.y);
 
         foodCompute.SetInts("resolution", gridSize.x, gridSize.y);
-        foodCompute.SetFloats("foodGain", foodGain.x / 100f, foodGain.y / 100f);
-        foodCompute.SetFloats("foodRange", foodRange.x / 100f, foodRange.y / 100f);
+        foodCompute.SetFloat("seed", Random.Range(0f, 100f));
+        foodCompute.SetFloats("foodGain", foodGain.x, foodGain.y);
+        foodCompute.SetFloats("foodRange", foodRange.x, foodRange.y);
 
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "water", waterTexture);
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "desert", desertTexture);
+        foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "food", foodTexutre);
         foodCompute.SetTexture(foodCompute.FindKernel("FoodUpdate"), "result", rt);
 
         foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
-    
+
         foodTexutre = renderTexTo2D(rt);
+
+        Debug.Log("Food value: " + foodTexutre.GetPixel(25, 25).r);
     }
 
     private void OnDrawGizmosSelected()

@@ -2,10 +2,12 @@
 #pragma kernel FoodInitialisation
 
 int2 resolution;
+float seed;
 float2 foodGain;
 float2 foodRange;
 Texture2D<float4> water;
 Texture2D<float4> desert;
+Texture2D<float4> food;
 RWTexture2D<float4> result;
 
 float Random(float2 uv)
@@ -23,17 +25,13 @@ void FoodUpdate (uint3 id : SV_DispatchThreadID)
     if(water[id.xy].x >= 1.0)
         return;
     
-    float lerpValueGain = clamp(desert[id.xy].x, 0.0, 1.0);
-    float lerpValueRange = clamp(desert[id.xy].x, 0.0, 1.0);
-    float foodGainValue = lerp(foodGain.x, foodGain.y, lerpValueGain);
-    float foodRangeValue = lerp(foodRange.x, foodRange.y, lerpValueRange);
+    float desertValue = clamp(desert[id.xy].x, 0.0, 1.0);
+    float foodGainValue = lerp(foodGain.x, foodGain.y, desertValue); 
+    float foodRangeValue = lerp(foodRange.x, foodRange.y, desertValue);
     
-    float foodValue = result[id.xy].x + foodGainValue;
-    foodValue = clamp(foodValue, 0.0, foodRangeValue);
+    float foodValue = clamp(food[id.xy].x + foodGainValue, 0.0, foodRangeValue);
     result[id.xy] = float4(foodValue, foodValue, foodValue, 1.0);
 }
-
-float seed;
 
 [numthreads(8, 8, 1)]
 void FoodInitialisation(uint3 id : SV_DispatchThreadID)
@@ -48,10 +46,9 @@ void FoodInitialisation(uint3 id : SV_DispatchThreadID)
         return;
     }
     
-    //Maybe initialise in regards to humidity
-    float lerpValue = clamp(desert[id.xy].x, 0.0, 1.0);
-    float foodValue = lerp(foodRange.x, foodRange.y, lerpValue);
-    foodValue *= Random(uv * seed);
-    result[id.xy] = float4(foodValue, foodValue, foodValue, 1.0);
+    float desertValue = clamp(desert[id.xy].x, 0.0, 1.0);
+    float foodValue = lerp(foodRange.x, foodRange.y, desertValue);
+    foodValue *= Random(uv + seed);
+    result[id.xy] = float4(foodValue, foodValue, foodValue, 1);
 
 }
