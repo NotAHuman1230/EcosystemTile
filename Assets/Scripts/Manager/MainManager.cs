@@ -8,8 +8,9 @@ public class MainManager : MonoBehaviour
     [SerializeField] MapManager mapManager;
     [SerializeField] AnimalManager animalManager;
 
-    [Header("Parameters")]
+    [Header("Debug")]
     [SerializeField] float updateDelay;
+    [SerializeField] bool manualUpdate;
 
     private void Start()
     {
@@ -20,8 +21,8 @@ public class MainManager : MonoBehaviour
     }
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //    delayedUpdate();
+        if (Input.GetKeyDown(KeyCode.Space) && manualUpdate)
+            delayedUpdate();
     }
 
     void delayedUpdate()
@@ -32,10 +33,14 @@ public class MainManager : MonoBehaviour
 
     IEnumerator delay()
     {
-        mapManager.updateFood();
-        animalManager.updateAnimals(mapManager.foodTexutre);
+        if (!manualUpdate)
+        {
+            mapManager.updateFood();
+            animalManager.updateAnimals(mapManager.foodTexutre);
+        }
 
         yield return new WaitForSeconds(updateDelay);
+
         StartCoroutine(delay());
     }
 }

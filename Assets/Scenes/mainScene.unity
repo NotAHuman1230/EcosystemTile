@@ -511,6 +511,7 @@ MonoBehaviour:
   mapManager: {fileID: 2104981730}
   animalManager: {fileID: 1893737699}
   updateDelay: 1
+  manualUpdate: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
