@@ -44,9 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b0c520ad8494a9d088129e801760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeSpanRange: {x: 10, y: 20}
-  plantDepletion: 0.1
-  plantEnergy: 5
+  lifeSpanRange: {x: 5, y: 15}
+  plantDepletion: 0.5
+  plantEnergy: 10
   meatEnergy: 50
   birthCost: 45
   mutationRate: 0.05
