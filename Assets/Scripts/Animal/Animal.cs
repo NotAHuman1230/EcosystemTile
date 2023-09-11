@@ -23,9 +23,9 @@ public class Animal : MonoBehaviour
     //Base
     [HideInInspector] public Vector2Int position;
     [HideInInspector] public bool isDead;
-    float hunger = 0f;
+    [HideInInspector] public float hunger = 0f;
 
-    float calulatedHungerUsage()
+    public float calulatedHungerUsage()
     {
         float hungerCost = 0f;
         foreach (Gene gene in genes)
@@ -151,6 +151,7 @@ public class Animal : MonoBehaviour
 
         float mutationChance = Random.Range(0f, 1f);
         if(mutationChance < mutationRate) mutate();
+        hunger = 50f;
     }
     public void death()
     {
@@ -161,7 +162,7 @@ public class Animal : MonoBehaviour
     //State control
     public void pickBehaviour()
     {
-        hunger -= calulatedHungerUsage();
+        hunger = hunger - 1f;
         if (hunger <= 0f)
             death();
 
@@ -172,7 +173,7 @@ public class Animal : MonoBehaviour
             Gene carnivory = getGene("Carnivory");
             float foodType = Random.Range(carnivory.boundryRange.x, carnivory.boundryRange.y);
             if (foodType < carnivory.value)
-                behaviour = Behaviour.dangerous;
+                behaviour = Behaviour.safe;
             else
                 behaviour = Behaviour.safe;
         }
@@ -188,18 +189,18 @@ public class Animal : MonoBehaviour
 
         switch (behaviour)
         {
-            case Behaviour.dangerous:
-                huntingMeat();
-                break;
+            //case Behaviour.dangerous:
+            //    huntingMeat();
+            //    break;
             case Behaviour.safe:
                 huntingPlants();
                 break;
-            case Behaviour.mating:
-                mating();
-                break;
-            default:
-                Debug.LogError("Behaviour not found!");
-                break;
+            //case Behaviour.mating:
+            //    mating();
+            //    break;
+            //default:
+            //    Debug.LogError("Behaviour not found!");
+            //    break;
         }
     }
     void huntingMeat() 
@@ -221,10 +222,10 @@ public class Animal : MonoBehaviour
     void huntingPlants() 
     {
         Color pixel = manager.food.GetPixel(position.x, position.y);
-        if (pixel.r == 0f)
+        if (pixel.r <= 0f)
             return;
 
-        hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
+        //hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
 
         float newValue = Mathf.Clamp(pixel.r - plantDepletion, 0f, 1f);
         pixel = new Color(newValue, newValue, newValue, 1f); 

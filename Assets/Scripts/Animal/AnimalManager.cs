@@ -12,7 +12,7 @@ public class AnimalManager : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] int animalAmount;
 
-    List<Animal> animals = new List<Animal>();
+    [HideInInspector] public List<Animal> animals = new List<Animal>();
     [HideInInspector] public List<Animal>[,] animalCells;
 
     [HideInInspector] public List<Animal> graveyard = new List<Animal>();
@@ -133,7 +133,7 @@ public class AnimalManager : MonoBehaviour
     }
 
     public void generateAnimals(Texture2D _water, Texture2D _desert)
-    {
+    { 
         water = _water;
         desert = _desert;
 
@@ -168,6 +168,11 @@ public class AnimalManager : MonoBehaviour
         foreach (Animal animal in animals)
             if (!animal.isDead)
                 animal.searching();
+
+        Debug.Log("Births: " + newBorns.Count);
+        Debug.Log("Deaths: " + graveyard.Count);
+        Debug.Log("Target Hunger: " + animals[0].hunger);
+        Debug.Log("Target Cost: " + animals[0].calulatedHungerUsage());
 
         destroyDead();
         generateBirths();
