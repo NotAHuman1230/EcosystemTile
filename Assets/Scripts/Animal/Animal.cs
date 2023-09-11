@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public enum Behaviour { dangerous, safe, mating }
 public class Animal : MonoBehaviour
 {
-    [Header("Diet")]
+    [Header("Energy")]
+    [SerializeField] Vector2Int lifeSpanRange;
     [SerializeField] [Range(0f, 1f)] float plantDepletion;
     [SerializeField] float plantEnergy;
     [SerializeField] float meatEnergy;
+    [SerializeField] float birthCost;
 
     [Header("Genes")]
     [SerializeField] float mutationRate;
@@ -23,7 +23,11 @@ public class Animal : MonoBehaviour
     //Base
     [HideInInspector] public Vector2Int position;
     [HideInInspector] public bool isDead;
+    [HideInInspector] public bool hasMated;
     [HideInInspector] public float hunger = 0f;
+
+    int lifeSpan;
+    int age = 0;
 
     public float calulatedHungerUsage()
     {
@@ -135,6 +139,7 @@ public class Animal : MonoBehaviour
     {
         position = _position;
         hunger = 50f;
+        lifeSpan = Random.Range(lifeSpanRange.x, lifeSpanRange.y);
 
         foreach (Gene gene in genes)
             gene.value = Random.Range(gene.boundryRange.x, gene.boundryRange.y);
@@ -142,6 +147,7 @@ public class Animal : MonoBehaviour
     public void born(Animal _father, Animal _mother, Vector2Int _position)
     {
         position = _position;
+        lifeSpan = Random.Range(lifeSpanRange.x, lifeSpanRange.y);
 
         for (int i = 0; i < genes.Count; i++)
         {
@@ -162,18 +168,23 @@ public class Animal : MonoBehaviour
     //State control
     public void pickBehaviour()
     {
-        hunger = hunger - 1f;
-        if (hunger <= 0f)
+        age++;
+
+        hasMated = false;
+
+        hunger -= calulatedHungerUsage();
+        if (hunger <= 0f || lifeSpan <= age)
             death();
 
-        if (hunger >= getGene("MatingDesire").value * (100f / getGene("MatingDesire").boundryRange.y))
+        float matingDesire = getGene("MatingDesire").value;
+        if (hunger >= birthCost + ((100f - birthCost) * matingDesire))
             behaviour = Behaviour.mating;
         else
         {
             Gene carnivory = getGene("Carnivory");
             float foodType = Random.Range(carnivory.boundryRange.x, carnivory.boundryRange.y);
             if (foodType < carnivory.value)
-                behaviour = Behaviour.safe;
+                behaviour = Behaviour.dangerous;
             else
                 behaviour = Behaviour.safe;
         }
@@ -189,18 +200,18 @@ public class Animal : MonoBehaviour
 
         switch (behaviour)
         {
-            //case Behaviour.dangerous:
-            //    huntingMeat();
-            //    break;
+            case Behaviour.dangerous:
+                huntingMeat();
+                break;
             case Behaviour.safe:
                 huntingPlants();
                 break;
-            //case Behaviour.mating:
-            //    mating();
-            //    break;
-            //default:
-            //    Debug.LogError("Behaviour not found!");
-            //    break;
+            case Behaviour.mating:
+                mating();
+                break;
+            default:
+                Debug.LogError("Behaviour not found!");
+                break;
         }
     }
     void huntingMeat() 
@@ -225,7 +236,7 @@ public class Animal : MonoBehaviour
         if (pixel.r <= 0f)
             return;
 
-        //hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
+        hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
 
         float newValue = Mathf.Clamp(pixel.r - plantDepletion, 0f, 1f);
         pixel = new Color(newValue, newValue, newValue, 1f); 
@@ -242,6 +253,13 @@ public class Animal : MonoBehaviour
             return;
 
         Animal mate = matePossibilites[Random.Range(0, matePossibilites.Count)];
+
+        hasMated = true;
+        mate.hasMated = true;
+
+        hunger -= birthCost;
+        mate.hunger -= birthCost;
+
         manager.reproduction(this, mate, position);
     }
 }

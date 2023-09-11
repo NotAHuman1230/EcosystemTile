@@ -44,9 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b0c520ad8494a9d088129e801760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lifeSpanRange: {x: 10, y: 20}
   plantDepletion: 0.1
-  plantEnergy: 100
+  plantEnergy: 5
   meatEnergy: 50
+  birthCost: 45
   mutationRate: 0.05
   genes:
   - name: Agility
@@ -103,3 +105,5 @@ MonoBehaviour:
   behaviour: 0
   position: {x: 0, y: 0}
   isDead: 0
+  hasMated: 0
+  hunger: 0

@@ -22,6 +22,8 @@ public class AnimalManager : MonoBehaviour
     [HideInInspector] public Texture2D desert;
     [HideInInspector] public Texture2D food;
 
+    Animal target;
+
     Vector2Int randomPosition(Texture2D _available)
     {
         Vector2Int position = new Vector2Int(Random.Range(0, _available.width), Random.Range(0, _available.height));
@@ -152,6 +154,8 @@ public class AnimalManager : MonoBehaviour
             animals.Add(instanceScript);
             animalCells[position.y, position.x].Add(instanceScript);
         }
+
+        target = animals[0];
     }
     public void updateAnimals(Texture2D _food)
     {
@@ -162,7 +166,7 @@ public class AnimalManager : MonoBehaviour
         foreach (Animal animal in animals)
             animal.pickBehaviour();
 
-        if(animals.Count > 1)
+        if (animals.Count > 1)
             mergeSortAnimals(0, animals.Count - 1);
 
         foreach (Animal animal in animals)
@@ -171,8 +175,17 @@ public class AnimalManager : MonoBehaviour
 
         Debug.Log("Births: " + newBorns.Count);
         Debug.Log("Deaths: " + graveyard.Count);
-        Debug.Log("Target Hunger: " + animals[0].hunger);
-        Debug.Log("Target Cost: " + animals[0].calulatedHungerUsage());
+
+        if (target.isDead)
+        {
+            Debug.Log("Target animal is dead");
+            target = animals[1];
+        }
+        else
+        {
+            Debug.Log("Hunger: " + target.hunger);
+            Debug.Log("Energy: " + target.calulatedHungerUsage());
+        }
 
         destroyDead();
         generateBirths();
