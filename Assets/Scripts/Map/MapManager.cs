@@ -107,7 +107,6 @@ public class MapManager : MonoBehaviour
         waterTexture = renderTexTo2D(generatePerlinNoise(waterCutOff, perlinWaterCellSize, perlinWaterIntensity));
         desertTexture = renderTexTo2D(generatePerlinNoise(desertCutOff, perlinDesertCellSize, perlinDesertIntensity));
         foodTexutre = initialiseFood(waterTexture, desertTexture);
-        Debug.Log(foodTexutre.GetPixel(25, 25).r);
 
         //Create visuals
         Sprite sprite = Sprite.Create(generateVisuals(waterTexture, desertTexture), new Rect(0f, 0f, gridSize.x, gridSize.y), new Vector2(0.5f, 0.5f), 1f / cellSize);
@@ -130,8 +129,6 @@ public class MapManager : MonoBehaviour
         foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
         foodTexutre = renderTexTo2D(rt);
-
-        Debug.Log("Food value: " + foodTexutre.GetPixel(25, 25).r);
     }
 
     private void OnDrawGizmosSelected()
