@@ -7,6 +7,8 @@ public class MainManager : MonoBehaviour
     [Header("References")]
     [SerializeField] MapManager mapManager;
     [SerializeField] AnimalManager animalManager;
+    [SerializeField] StatManager statManager;
+    [SerializeField] Animal animalPrefab;
 
     [Header("Debug")]
     [SerializeField] float updateDelay;
@@ -16,6 +18,7 @@ public class MainManager : MonoBehaviour
     {
         mapManager.generateMap();
         animalManager.generateAnimals(mapManager.waterTexture, mapManager.desertTexture);
+        statManager.initialiseAverages(animalPrefab.getGeneList());
 
         StartCoroutine(delay());
     }
@@ -29,15 +32,13 @@ public class MainManager : MonoBehaviour
     {
         mapManager.updateFood();
         animalManager.updateAnimals(mapManager.foodTexutre);
+        statManager.calculateAverages(animalManager.geneTotals, animalManager.animals.Count);
     }
 
     IEnumerator delay()
     {
         if (!manualUpdate)
-        {
-            mapManager.updateFood();
-            animalManager.updateAnimals(mapManager.foodTexutre);
-        }
+            delayedUpdate();
 
         yield return new WaitForSeconds(updateDelay);
 

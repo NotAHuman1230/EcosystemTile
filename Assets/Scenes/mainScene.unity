@@ -155,6 +155,7 @@ Transform:
   - {fileID: 2135565217}
   - {fileID: 2104981729}
   - {fileID: 1893737698}
+  - {fileID: 1321603338}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &428139583
@@ -297,6 +298,51 @@ MonoBehaviour:
   scaleFactor: 25
   scaleMultiplier: 2
   scaleRange: {x: 1, y: 50}
+--- !u!1 &1321603337
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1321603338}
+  - component: {fileID: 1321603339}
+  m_Layer: 0
+  m_Name: StatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1321603338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321603337}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 67868213}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1321603339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321603337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b2a856687b4044d93cd31c4f62e062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stats: []
 --- !u!1 &1893737697
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,7 +390,9 @@ MonoBehaviour:
   animalPrefab: {fileID: 694099419284323498, guid: 4eef02ef17a146940ac350badb0ea5e8, type: 3}
   animalParent: {fileID: 428139584}
   animalAmount: 1000
+  animals: []
   graveyard: []
+  geneTotals: []
   water: {fileID: 0}
   desert: {fileID: 0}
   food: {fileID: 0}
@@ -510,6 +558,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapManager: {fileID: 2104981730}
   animalManager: {fileID: 1893737699}
+  statManager: {fileID: 1321603339}
+  animalPrefab: {fileID: 325475627081378461, guid: 4eef02ef17a146940ac350badb0ea5e8, type: 3}
   updateDelay: 1
   manualUpdate: 1
 --- !u!1660057539 &9223372036854775807

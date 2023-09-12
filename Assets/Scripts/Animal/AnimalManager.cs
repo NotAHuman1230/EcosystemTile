@@ -18,11 +18,15 @@ public class AnimalManager : MonoBehaviour
     [HideInInspector] public List<Animal> graveyard = new List<Animal>();
     List<Animal> newBorns = new List<Animal>();
 
+    [HideInInspector] public List<float> geneTotals = new List<float>();
+
     [HideInInspector] public Texture2D water;
     [HideInInspector] public Texture2D desert;
     [HideInInspector] public Texture2D food;
 
     Animal target;
+
+    public int getPopulation() { return animals.Count; }
 
     Vector2Int randomPosition(Texture2D _available)
     {
@@ -155,16 +159,26 @@ public class AnimalManager : MonoBehaviour
             animalCells[position.y, position.x].Add(instanceScript);
         }
 
+        for (int i = 0; i < animals[0].getGeneList().Count; i++)
+        {
+            float total = 0f;
+            for (int j = 0; j < animals.Count; j++)
+                total += animals[j].getGeneList()[i].value;
+
+            geneTotals.Add(total);
+        }
+
         target = animals[0];
     }
     public void updateAnimals(Texture2D _food)
-    {
-        Debug.Log("Population: " + animals.Count);
-
+    { 
         food = _food;
 
         foreach (Animal animal in animals)
+        {
             animal.pickBehaviour();
+            animal.generateTotals();
+        }
 
         if (animals.Count > 1)
             mergeSortAnimals(0, animals.Count - 1);
@@ -173,6 +187,7 @@ public class AnimalManager : MonoBehaviour
             if (!animal.isDead)
                 animal.searching();
 
+        Debug.Log("Population: " + animals.Count);
         Debug.Log("Births: " + newBorns.Count);
         Debug.Log("Deaths: " + graveyard.Count);
 

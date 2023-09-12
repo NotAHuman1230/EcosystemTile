@@ -29,6 +29,7 @@ public class Animal : MonoBehaviour
     int lifeSpan;
     int age = 0;
 
+
     public float calulatedHungerUsage()
     {
         float hungerCost = 0f;
@@ -55,6 +56,19 @@ public class Animal : MonoBehaviour
         Debug.LogError("Gene value not found!");
         return genes[0];
     }
+    public List<Gene> getGeneList() { return genes; }
+
+    public void generateTotals()
+    {
+        for (int i = 0; i < genes.Count; i++)
+        {
+            if (manager.animals[0] == this)
+                manager.geneTotals[i] = 0f;
+
+            manager.geneTotals[i] += genes[i].value;
+        }
+    }
+
     public float[,] generateCellChances(List<Animal>[,] _surroundings)
     {
         float[,] chances = {{0, 0, 0 }, {0, 0, 0 }, {0, 0, 0 }};
