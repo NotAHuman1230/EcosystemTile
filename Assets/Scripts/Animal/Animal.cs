@@ -249,7 +249,7 @@ public class Animal : MonoBehaviour
         Color pixel = manager.food.GetPixel(position.x, position.y);
         if (pixel.r <= 0f)
             return;
-
+        
         hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
 
         float newValue = Mathf.Clamp(pixel.r - plantDepletion, 0f, 1f);

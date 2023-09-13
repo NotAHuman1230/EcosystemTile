@@ -18,7 +18,7 @@ public class MainManager : MonoBehaviour
     {
         mapManager.generateMap();
         animalManager.generateAnimals(mapManager.waterTexture, mapManager.desertTexture);
-        statManager.initialiseAverages(animalPrefab.getGeneList());
+        statManager.initialiseStats(animalPrefab.getGeneList());
 
         StartCoroutine(delay());
     }
@@ -32,7 +32,7 @@ public class MainManager : MonoBehaviour
     {
         mapManager.updateFood();
         animalManager.updateAnimals(mapManager.foodTexutre);
-        statManager.calculateAverages(animalManager.geneTotals, animalManager.animals.Count);
+        statManager.calculateStats(animalManager.geneTotals, animalManager.animals.Count);
     }
 
     IEnumerator delay()

@@ -129,6 +129,8 @@ public class MapManager : MonoBehaviour
         foodCompute.Dispatch(foodCompute.FindKernel("FoodUpdate"), (int)Mathf.Ceil(gridSize.x / 8f), (int)Mathf.Ceil(gridSize.y / 8f), 1);
 
         foodTexutre = renderTexTo2D(rt);
+
+        Debug.Log(foodTexutre.GetPixel(25, 25));
     }
 
     private void OnDrawGizmosSelected()

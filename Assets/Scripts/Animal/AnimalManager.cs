@@ -187,21 +187,6 @@ public class AnimalManager : MonoBehaviour
             if (!animal.isDead)
                 animal.searching();
 
-        Debug.Log("Population: " + animals.Count);
-        Debug.Log("Births: " + newBorns.Count);
-        Debug.Log("Deaths: " + graveyard.Count);
-
-        if (target.isDead)
-        {
-            Debug.Log("Target animal is dead");
-            target = animals[1];
-        }
-        else
-        {
-            Debug.Log("Hunger: " + target.hunger);
-            Debug.Log("Energy: " + target.calulatedHungerUsage());
-        }
-
         destroyDead();
         generateBirths();
     }
