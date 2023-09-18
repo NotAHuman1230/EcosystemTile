@@ -32,7 +32,7 @@ public class MainManager : MonoBehaviour
     {
         mapManager.updateFood();
         animalManager.updateAnimals(mapManager.foodTexutre);
-        statManager.calculateStats(animalManager.animals, animalManager.animals.Count);
+        statManager.calculateStats(animalManager.animals, animalManager.newBorns.Count);
         animalManager.generateDestroy();
     }
 

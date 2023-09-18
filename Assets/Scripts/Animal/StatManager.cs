@@ -13,6 +13,7 @@ public class GeneStats
 public class StatManager : MonoBehaviour
 {
     [SerializeField] int population;
+    [SerializeField] int births;
     [SerializeField] int starved;
     [SerializeField] int eaten;
     [SerializeField] List<GeneStats> stats = new List<GeneStats>();
@@ -23,9 +24,10 @@ public class StatManager : MonoBehaviour
         for (int i = 0; i < _genes.Count; i++)
             stats.Add(new GeneStats(_genes[i].name));
     }
-    public void calculateStats(List<Animal> _animals, int _population)
+    public void calculateStats(List<Animal> _animals, int _births)
     {
-        population = _population;
+        population = _animals.Count;
+        births = _births;
         starved = 0;
         eaten = 0;
 

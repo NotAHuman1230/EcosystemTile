@@ -16,7 +16,7 @@ public class AnimalManager : MonoBehaviour
     [HideInInspector] public List<Animal>[,] animalCells;
 
     [HideInInspector] public List<Animal> graveyard = new List<Animal>();
-    List<Animal> newBorns = new List<Animal>();
+    [HideInInspector] public List<Animal> newBorns = new List<Animal>();
 
     [HideInInspector] public List<float> geneTotals = new List<float>();
 
