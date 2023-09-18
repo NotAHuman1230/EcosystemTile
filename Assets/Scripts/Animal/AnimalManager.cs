@@ -184,7 +184,7 @@ public class AnimalManager : MonoBehaviour
             mergeSortAnimals(0, animals.Count - 1);
 
         foreach (Animal animal in animals)
-            if (!animal.isDead)
+            if (animal.behaviour == Behaviour.safe || animal.behaviour == Behaviour.dangerous || animal.behaviour == Behaviour.mating)
                 animal.searching();
 
         destroyDead();

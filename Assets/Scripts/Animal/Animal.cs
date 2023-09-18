@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Behaviour { dangerous, safe, mating, starved, eaten }
+public enum Behaviour { dangerous, safe, mating, mated, starved, eaten }
 public class Animal : MonoBehaviour
 {
     [Header("Energy")]
@@ -22,8 +22,6 @@ public class Animal : MonoBehaviour
 
     //Base
     [HideInInspector] public Vector2Int position;
-    [HideInInspector] public bool isDead;
-    [HideInInspector] public bool hasMated;
     [HideInInspector] public float hunger = 0f;
 
     int lifeSpan;
@@ -173,10 +171,10 @@ public class Animal : MonoBehaviour
         if(mutationChance < mutationRate) mutate();
         hunger = 50f;
     }
-    public void death()
+    public void death(Behaviour _state)
     {
         manager.graveyard.Add(this);
-        isDead = true;
+        behaviour = _state;
     }
 
     //State control
@@ -184,11 +182,9 @@ public class Animal : MonoBehaviour
     {
         age++;
 
-        hasMated = false;
-
         hunger -= calulatedHungerUsage();
         if (hunger <= 0f || lifeSpan <= age)
-            death();
+            death(Behaviour.starved);
 
         float matingDesire = getGene("MatingDesire").value;
         if (hunger >= birthCost + ((100f - birthCost) * matingDesire))
@@ -240,7 +236,7 @@ public class Animal : MonoBehaviour
         if(huntSuccess < getGene("Offence").value)
         {
             hunger = Mathf.Clamp(hunger + meatEnergy, 0f, 100f);
-            victim.death();
+            victim.death(Behaviour.eaten);
         }
 
     }
@@ -271,8 +267,8 @@ public class Animal : MonoBehaviour
 
         Animal mate = matePossibilites[Random.Range(0, matePossibilites.Count)];
 
-        hasMated = true;
-        mate.hasMated = true;
+        behaviour = Behaviour.mated;
+        mate.behaviour = Behaviour.mated;
 
         hunger -= birthCost;
         mate.hunger -= birthCost;
