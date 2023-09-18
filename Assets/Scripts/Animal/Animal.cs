@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Behaviour { dangerous, safe, mating }
+public enum Behaviour { dangerous, safe, mating, starved, eaten }
 public class Animal : MonoBehaviour
 {
     [Header("Energy")]
@@ -250,11 +250,14 @@ public class Animal : MonoBehaviour
         if (pixel.r <= 0f)
             return;
         
+        Debug.Log(pixel.r);
         hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
 
         float newValue = Mathf.Clamp(pixel.r - plantDepletion, 0f, 1f);
         pixel = new Color(newValue, newValue, newValue, 1f); 
         manager.food.SetPixel(position.x, position.y, pixel);
+        Debug.Log(pixel.r);
+        Debug.Log(manager.food.GetPixel(position.x, position.y).r);
 
     }
     void mating() 
