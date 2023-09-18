@@ -197,10 +197,7 @@ public class Animal : MonoBehaviour
 
         hunger -= calulatedHungerUsage();
         if (hunger <= 0f || lifeSpan <= age)
-        {
-            Debug.Log("hello");
             death(Behaviour.starved);
-        }
     }
     public void searching() 
     {
