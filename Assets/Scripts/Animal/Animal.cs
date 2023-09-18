@@ -180,12 +180,6 @@ public class Animal : MonoBehaviour
     //State control
     public void pickBehaviour()
     {
-        age++;
-
-        hunger -= calulatedHungerUsage();
-        if (hunger <= 0f || lifeSpan <= age)
-            death(Behaviour.starved);
-
         float matingDesire = getGene("MatingDesire").value;
         if (hunger >= birthCost + ((100f - birthCost) * matingDesire))
             behaviour = Behaviour.mating;
@@ -197,6 +191,15 @@ public class Animal : MonoBehaviour
                 behaviour = Behaviour.dangerous;
             else
                 behaviour = Behaviour.safe;
+        }
+
+        age++;
+
+        hunger -= calulatedHungerUsage();
+        if (hunger <= 0f || lifeSpan <= age)
+        {
+            Debug.Log("hello");
+            death(Behaviour.starved);
         }
     }
     public void searching() 
@@ -246,14 +249,11 @@ public class Animal : MonoBehaviour
         if (pixel.r <= 0f)
             return;
         
-        Debug.Log(pixel.r);
         hunger = Mathf.Clamp(hunger + plantEnergy, 0f, 100f);
 
         float newValue = Mathf.Clamp(pixel.r - plantDepletion, 0f, 1f);
         pixel = new Color(newValue, newValue, newValue, 1f); 
         manager.food.SetPixel(position.x, position.y, pixel);
-        Debug.Log(pixel.r);
-        Debug.Log(manager.food.GetPixel(position.x, position.y).r);
 
     }
     void mating() 

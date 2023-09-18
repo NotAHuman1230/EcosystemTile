@@ -26,17 +26,33 @@ public class StatManager : MonoBehaviour
     public void calculateStats(List<Animal> _animals, int _population)
     {
         population = _population;
+        starved = 0;
+        eaten = 0;
 
-        for (int i = 0; i < stats.Count; i++)
+        resetAverages();
+
+        for (int i = 0; i < _animals.Count; i++)
         {
-            float average = 0f;
+            if (_animals[i].behaviour == Behaviour.starved) starved++;
+            else if (_animals[i].behaviour == Behaviour.eaten) eaten++;
 
-            for (int n = 0; n < _animals.Count; n++)
+            for (int n = 0; n < stats.Count; n++)
             {
-                average += _animals[n].getGeneList()[i].value;
+                stats[n].average += _animals[i].getGeneList()[n].value;
             }
-
-            stats[i].average = average / _animals.Count;
         }
+
+        divideAverages(_animals.Count);
+    }
+
+    void resetAverages()
+    {
+        foreach(GeneStats geneStat in stats)
+            geneStat.average = 0f;
+    }
+    void divideAverages(int _count)
+    {
+        foreach (GeneStats geneStat in stats)
+            geneStat.average /= _count;
     }
 }

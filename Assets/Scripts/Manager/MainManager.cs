@@ -33,6 +33,7 @@ public class MainManager : MonoBehaviour
         mapManager.updateFood();
         animalManager.updateAnimals(mapManager.foodTexutre);
         statManager.calculateStats(animalManager.animals, animalManager.animals.Count);
+        animalManager.generateDestroy();
     }
 
     IEnumerator delay()

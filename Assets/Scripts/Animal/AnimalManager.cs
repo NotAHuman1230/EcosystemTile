@@ -186,7 +186,9 @@ public class AnimalManager : MonoBehaviour
         foreach (Animal animal in animals)
             if (animal.behaviour == Behaviour.safe || animal.behaviour == Behaviour.dangerous || animal.behaviour == Behaviour.mating)
                 animal.searching();
-
+    }
+    public void generateDestroy()
+    {
         destroyDead();
         generateBirths();
     }
